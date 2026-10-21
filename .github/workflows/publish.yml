@@ -1,7 +1,7 @@
 name: Release and npm
 on:
-  release:
-    types: [published]
+  push:
+    tags: ['v*']
   workflow_dispatch:
     inputs:
       publish:
@@ -34,7 +34,7 @@ jobs:
         run: npm run check:package
         env:
           RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
-          REQUIRE_RELEASE_TAG: ${{ github.event_name == 'release' || inputs.publish }}
+          REQUIRE_RELEASE_TAG: ${{ github.event_name == 'push' || inputs.publish }}
       - run: npm run pack:release
       - run: npm run package -- results/releases
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -69,7 +69,7 @@ jobs:
           TARBALL: ${{ needs.package.outputs.tarball }}
           RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
   assets:
-    if: github.event_name == 'release'
+    if: github.event_name == 'push'
     needs: [package, verify]
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -80,12 +80,19 @@ jobs:
         with:
           name: release-packages
           path: artifacts
-      - run: gh release upload "$RELEASE_TAG" artifacts/npm/* artifacts/releases/* --repo "$GITHUB_REPOSITORY"
+      - name: Create GitHub Release and attach audited packages
+        shell: bash
+        run: |
+          release_flags=()
+          if [[ "$RELEASE_TAG" == *-* ]]; then release_flags+=(--prerelease); fi
+          gh release create "$RELEASE_TAG" artifacts/npm/* artifacts/releases/* \
+            --repo "$GITHUB_REPOSITORY" --verify-tag --title "$RELEASE_TAG" \
+            --generate-notes "${release_flags[@]}"
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_TAG: ${{ github.ref_name }}
   npm:
-    if: vars.NPM_PUBLISH_ENABLED == 'true' && (github.event_name == 'release' || inputs.publish)
+    if: vars.NPM_PUBLISH_ENABLED == 'true' && (github.event_name == 'push' || inputs.publish)
     needs: [package, verify]
     runs-on: ubuntu-latest
     timeout-minutes: 10

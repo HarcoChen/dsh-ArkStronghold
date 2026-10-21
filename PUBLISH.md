@@ -22,10 +22,23 @@ archive and standalone ZIP, plus checksums. Both include bundled core runtime;
 end users do not separately install Core. The ZIP includes corresponding source
 for the exact core and DSH host used, including public artwork and its notice.
 
-Release tags must match package.json. Publishing a GitHub Release runs the
-publish workflow; npm publication additionally requires NPM_PUBLISH_ENABLED and
-configured npm trusted publishing. This migration does not itself publish a new
-version or change that setting.
+Release tags must match package.json. Pushing a `v*` tag runs the publish
+workflow: it builds and verifies the packages, creates a GitHub Release with the
+audited assets, and publishes to npm when NPM_PUBLISH_ENABLED is true and npm
+trusted publishing is configured. Tags containing a hyphen create prereleases
+and use the npm `next` dist-tag; stable versions use `latest`.
+
+After updating package.json/package-lock.json, rebuilding and committing the
+generated files, wait for branch CI to pass, then publish the matching commit:
+
+```sh
+git tag v0.1.1
+git push origin v0.1.1
+```
+
+Do not manually create the GitHub Release to trigger publication. A manual
+workflow_dispatch run can still build only, or publish to npm when explicitly
+requested on a matching version tag. Core remains pinned to its exact commit.
 
 The shared module loader is owned by Core and bundled beside site-worker.mjs.
 PUBLISH.md is optional in the shared packager, so removing publishing notes does
