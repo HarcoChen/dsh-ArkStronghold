@@ -182,8 +182,8 @@ function Panel(props) {
                 setName(e.target.value);
                 setDirty(true);
                 setMessage("");
-              }, placeholder: "Ark Agent", disabled: busy, maxLength: 12, spellCheck: false, autoComplete: "off", "aria-describedby": "ark-name-help" }),
-              (0, import_react.createElement)("p", { id: "ark-name-help", className: "ark-help" }, "\u6700\u591A 12 \u4E2A\u5B57\u7B26\u3002\u7559\u7A7A\u4F7F\u7528\u5BA2\u6237\u7AEF\u914D\u7F6E\uFF1B\u672A\u914D\u7F6E\u65F6\u4E3A Ark Agent\u3002LLM \u6807\u8BB0\u4ECD\u4F1A\u4FDD\u7559\u3002")
+              }, placeholder: "\u84DD\u8272\u5927\u80A5\u9C7C", disabled: busy, maxLength: 12, spellCheck: false, autoComplete: "off", "aria-describedby": "ark-name-help" }),
+              (0, import_react.createElement)("p", { id: "ark-name-help", className: "ark-help" }, "\u6700\u591A 12 \u4E2A\u5B57\u7B26\u3002\u7559\u7A7A\u4F7F\u7528\u5BA2\u6237\u7AEF\u914D\u7F6E\uFF1B\u672A\u914D\u7F6E\u65F6\u4E3A\u84DD\u8272\u5927\u80A5\u9C7C\u3002LLM \u6807\u8BB0\u4ECD\u4F1A\u4FDD\u7559\u3002")
             )
           ),
           (0, import_react.createElement)(

@@ -23443,10 +23443,13 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { homedir } from "node:os";
 var DEFAULT_SITE_URL = "https://ark.minyako.top";
-function normalizePlayerName(value) {
+function defaultPlayerName(client) {
+  return { "dsh-plugin": "\u84DD\u8272\u5927\u80A5\u9C7C", "codex-mcp": "\u7B28\u86CB\u5927\u80A5\u9F99" }[client] || "Ark Agent";
+}
+function normalizePlayerName(value, fallback = "Ark Agent") {
   const name2 = String(value ?? "").trim();
   if (name2.length > 12) throw new Error("\u73A9\u5BB6\u540D\u6700\u591A 12 \u4E2A\u5B57\u7B26");
-  return name2 || "Ark Agent";
+  return name2 || fallback;
 }
 function normalizeSiteUrl(value) {
   const input2 = String(value ?? "").trim();
@@ -23490,7 +23493,7 @@ function resolveConfig(config2 = {}, environment = process.env) {
   const resolved = { ...defaults, ...env, ...config2 };
   resolved.url = normalizeSiteUrl(resolved.url || DEFAULT_SITE_URL);
   resolved.roomCode = normalizeRoomCode(resolved.roomCode);
-  resolved.name = normalizePlayerName(resolved.name);
+  resolved.name = normalizePlayerName(resolved.name, defaultPlayerName(resolved.client));
   return resolved;
 }
 
