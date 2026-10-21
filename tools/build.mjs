@@ -2,17 +2,17 @@ import {build} from 'esbuild';
 import {mkdir,copyFile,writeFile,readFile,rm,chmod,cp} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {join,dirname} from 'node:path';
-import {copySource} from '@harco/ark-play-core/build-package';
-import {writeNotices} from '@harco/ark-play-core/build-notices';
+import {copySource} from '@arkstrongholdrl/ark-play-core/build-package';
+import {writeNotices} from '@arkstrongholdrl/ark-play-core/build-notices';
 const root=fileURLToPath(new URL('../',import.meta.url));
-const shared=dirname(fileURLToPath(import.meta.resolve('@harco/ark-play-core/package.json')));
+const shared=dirname(fileURLToPath(import.meta.resolve('@arkstrongholdrl/ark-play-core/package.json')));
 const metadata=JSON.parse(await readFile(join(root,'package.json'),'utf8'));
 await mkdir(join(root,'dist'),{recursive:true});
 await build({entryPoints:[join(root,'index.mjs')],outfile:join(root,'dist/index.mjs'),bundle:true,
   platform:'node',format:'esm',target:'node22',sourcemap:false,
   banner:{js:"import { createRequire as __createRequire } from 'node:module'; const require = __createRequire(import.meta.url);"}});
 await rm(join(root,'dist/node_modules'),{recursive:true,force:true});
-await build({entryPoints:{'site-worker':join(shared,'src/site-worker.mjs'),'site-loader':join(root,'site-loader.mjs')},outdir:join(root,'dist'),
+await build({entryPoints:{'site-worker':join(shared,'src/site-worker.mjs'),'site-loader':join(shared,'src/site-loader.mjs')},outdir:join(root,'dist'),
   outExtension:{'.js':'.mjs'},bundle:true,platform:'node',format:'esm',target:'node22'});
 // DSH loads browser plugins through its shared module table (including React).
 await build({entryPoints:[join(root,'client.mjs')],outfile:join(root,'dist/client.js'),bundle:true,

@@ -1,4 +1,4 @@
-import {createTools,z} from '@harco/ark-play-core';
+import {createTools,z} from '@arkstrongholdrl/ark-play-core';
 import Schema from '@deepseek-ai/schemastery';
 
 export const name='ark-play';

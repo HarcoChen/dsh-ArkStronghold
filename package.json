@@ -39,8 +39,8 @@
   },
   "devDependencies": {
     "@deepseek-ai/schemastery": "3.18.5",
-    "@harco/ark-play-core": "https://codeload.github.com/HarcoChen/ArkStrongholdCodex/tar.gz/d2e51eacb946e831a6f928a33967151f51dac603",
-    "esbuild": "0.25.12"
+    "esbuild": "0.25.12",
+    "@arkstrongholdrl/ark-play-core": "https://codeload.github.com/ArkStrongholdRL/ark-play-core/tar.gz/aa2be54ce0cb83d3a107fe60d754b6748b5a320b"
   },
   "repository": {
     "type": "git",
@@ -63,7 +63,6 @@
     "PUBLISH.md",
     "client.mjs",
     "site-url.mjs",
-    "site-loader.mjs",
     "public"
   ],
   "bin": {

@@ -1,4 +1,4 @@
-// node_modules/@harco/ark-play-core/src/site-worker.mjs
+// node_modules/@arkstrongholdrl/ark-play-core/src/site-worker.mjs
 import { register } from "node:module";
 import { parentPort, workerData } from "node:worker_threads";
 var { origin, headers, index, raw } = workerData;

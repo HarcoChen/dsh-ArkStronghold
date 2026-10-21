@@ -1,4 +1,4 @@
-// site-loader.mjs
+// node_modules/@arkstrongholdrl/ark-play-core/src/site-loader.mjs
 import { createHash } from "node:crypto";
 var origin;
 var headers;

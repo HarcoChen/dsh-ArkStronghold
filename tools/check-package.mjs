@@ -11,7 +11,7 @@ if(pkg.name!=='dsh-ark-stronghold'||pkg.private||pkg.publishConfig?.access!=='pu
 if(pkg.dsh?.manifestVersion!==1||pkg.dsh.bundle?.patch!=='./cordis.patch.yml')throw new Error('Invalid DSH bundle metadata');
 if(!/name: ['"]?dsh-ark-stronghold['"]?\s*$/.test(await readFile(join(root,'cordis.patch.yml'),'utf8')))throw new Error('Bundle patch must reference the npm name');
 const artwork=['bkg_01.png','bg_mountains_tiled.png','round_bg_line.png','NOTICE.md'];
-const required=[...artwork.flatMap(name=>['public/'+name,'dist/public/'+name]),'dist/client.js','client.mjs','site-url.mjs','site-loader.mjs','dist/index.mjs','dist/site-worker.mjs','dist/site-loader.mjs','dist/THIRD_PARTY_LICENSES.txt',
+const required=[...artwork.flatMap(name=>['public/'+name,'dist/public/'+name]),'dist/client.js','client.mjs','site-url.mjs','dist/index.mjs','dist/site-worker.mjs','dist/site-loader.mjs','dist/THIRD_PARTY_LICENSES.txt',
   'cordis.patch.yml','configure.mjs','LICENSE','README.md','corresponding-source/ark-play-core/src/site-worker.mjs'];
 const tarballOnly=Boolean(process.argv[2]&&process.argv[2]!=='--pack');
 if(!tarballOnly) {
