@@ -1,0 +1,37 @@
+{
+  "name": "@harco/dsh-ark-play",
+  "version": "0.2.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.mjs",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "GPL-3.0-or-later",
+  "description": "DSH Cordis plugin using the shared Ark Play WSS gameplay core",
+  "scripts": {
+    "build": "node tools/build.mjs"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "*"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/cordis": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "esbuild": "0.25.12",
+    "@harco/ark-play-core": "git+https://github.com/HarcoChen/ArkStrongholdCodex.git#e604c146ab428c3f2faf220786b371d9d6647043"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HarcoChen/dsh-ArkStronghold.git"
+  },
+  "homepage": "https://github.com/HarcoChen/dsh-ArkStronghold"
+}

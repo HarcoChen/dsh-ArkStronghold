@@ -1,0 +1,15 @@
+{
+  "name": "@harco/dsh-ark-play",
+  "version": "0.2.0-alpha.1",
+  "type": "module",
+  "main": "./index.mjs",
+  "license": "GPL-3.0-or-later",
+  "engines": {
+    "node": ">=22"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
