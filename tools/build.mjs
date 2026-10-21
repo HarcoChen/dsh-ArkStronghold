@@ -24,7 +24,7 @@ await rm(join(root,'dist/public'),{recursive:true,force:true});
 await cp(join(root,'public'),join(root,'dist/public'),{recursive:true});
 await writeNotices(join(root,'node_modules'),join(root,'dist/THIRD_PARTY_LICENSES.txt'));
 await copyFile(join(root,'cordis.patch.yml'),join(root,'dist/cordis.patch.yml'));
-await copyFile(join(shared,'tools/configure.mjs'),join(root,'configure.mjs'));
+await build({entryPoints:[join(shared,'tools/configure.mjs')],outfile:join(root,'configure.mjs'),bundle:true,platform:'node',format:'esm',target:'node22'});
 await chmod(join(root,'configure.mjs'),0o755);
 await rm(join(root,'corresponding-source'),{recursive:true,force:true});
 await copySource(shared,join(root,'corresponding-source/ark-play-core'));
