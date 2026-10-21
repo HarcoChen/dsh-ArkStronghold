@@ -23829,7 +23829,7 @@ var GameClient = class {
         ws.once("open", resolve2);
         ws.once("error", reject);
       });
-      await this.request({ t: "hello", name: this.name, version: 1, noReplace: true, ...this.sessionToken ? { token: this.sessionToken } : {} });
+      await this.request({ t: "hello", name: this.name, version: 1, noReplace: true, controller: { kind: "llm", client: this.config.client === "dsh-plugin" ? "dsh-plugin" : "codex-mcp" }, ...this.sessionToken ? { token: this.sessionToken } : {} });
       if (!this.welcome) throw new Error(this.siteError || "No compatible welcome");
       await this.quiet();
       if (this.sessionLost) throw new Error("Site session expired; use ark_finish to acknowledge before starting a new game");
@@ -23970,8 +23970,16 @@ var GameClient = class {
         this.combatQueue = [];
         this.authorities.clear();
         this.revision++;
-        await this.request({ t: "room.create", mode: "solo", difficulty: payload.difficulty || "ABYSS" });
-        await this.request({ t: "room.start" });
+        const code = String(payload.roomCode || "").trim().toUpperCase();
+        if (code) {
+          if (!/^[A-Z0-9]{4}$/.test(code)) throw new Error("Expected a four-character room code");
+          await this.request({ t: "room.join", code });
+          if (this.room?.content?.vanilla === false) throw new Error("Gameplay plugin content sets are not supported by this client version");
+          await this.request({ t: "room.ready", ready: true });
+        } else {
+          await this.request({ t: "room.create", mode: "solo", difficulty: payload.difficulty || "ABYSS" });
+          await this.request({ t: "room.start" });
+        }
         await this.settle(signal);
         return await this.view();
       }
@@ -24141,9 +24149,9 @@ function createTools(config2 = {}) {
   const tools = [
     {
       name: "ark_start",
-      description: "\u5411\u6E38\u620F\u7AD9\u8BF7\u6C42\u5F00\u59CB\u72EC\u7ACB\u5355\u4EBA\u5BF9\u5C40\uFF1B\u5B9E\u9645\u80FD\u529B\u4E0E\u63A8\u8FDB\u65B9\u5F0F\u7531\u670D\u52A1\u5668\u51B3\u5B9A\u3002",
-      schema: external_exports.object({ difficulty: external_exports.enum(["ABYSS", "NORMAL", "HARD"]).default("ABYSS") }),
-      execute: async (args, signal) => show(await client.call({ op: "start", difficulty: args.difficulty }, signal), true)
+      description: "\u5F00\u5355\u4EBA\u5C40\uFF0C\u6216\u6309 roomCode \u52A0\u5165\u5DF2\u6709\u623F\u95F4\u5E76\u51C6\u5907\uFF0C\u7B49\u5F85\u623F\u4E3B\u5F00\u59CB\u3002\u623F\u95F4\u53F7\u7559\u7A7A\u5F00\u5355\u4EBA\u5C40\uFF1B\u52A0\u5165\u65F6\u96BE\u5EA6\u7531\u623F\u95F4\u51B3\u5B9A\u3002",
+      schema: external_exports.object({ difficulty: external_exports.enum(["ABYSS", "NORMAL", "HARD"]).default("ABYSS"), roomCode: external_exports.string().trim().toUpperCase().regex(/^(?:[A-Z0-9]{4})?$/).optional().describe("\u56DB\u4F4D\u623F\u95F4\u53F7\uFF1B\u7701\u7565\u4F7F\u7528DSH\u914D\u7F6E\uFF0C\u7A7A\u5B57\u7B26\u4E32\u5F00\u5355\u4EBA\u5C40") }),
+      execute: async (args, signal) => show(await client.call({ op: "start", difficulty: args.difficulty, roomCode: args.roomCode ?? config2.roomCode }, signal), true)
     },
     {
       name: "ark_view",
@@ -25045,6 +25053,7 @@ defineMethod("transform", [
 ], ({ inner }, isInner) => inner.toString(isInner));
 
 // site-url.mjs
+var DEFAULT_SITE_URL = "https://ark.minyako.top";
 function normalizeSiteUrl(value) {
   const input2 = String(value ?? "").trim();
   if (!input2) return "";
@@ -25052,7 +25061,7 @@ function normalizeSiteUrl(value) {
   try {
     url2 = new URL(input2);
   } catch {
-    throw new Error("\u8BF7\u8F93\u5165\u5B8C\u6574\u7684\u6E38\u620F\u7AD9\u7F51\u5740\uFF0C\u4F8B\u5982 https://ark.harco.top");
+    throw new Error("\u8BF7\u8F93\u5165\u5B8C\u6574\u7684\u6E38\u620F\u7AD9\u7F51\u5740\uFF0C\u4F8B\u5982 https://ark.minyako.top");
   }
   if (url2.username || url2.password || url2.search || url2.hash || !["/", "/ws", "/ws/"].includes(url2.pathname)) {
     throw new Error("\u6E38\u620F\u7AD9\u5730\u5740\u53EA\u652F\u6301\u7AD9\u70B9\u6839\u8DEF\u5F84\u6216 /ws\uFF0C\u4E0D\u80FD\u5305\u542B\u8D26\u53F7\u3001\u67E5\u8BE2\u53C2\u6570\u6216\u7247\u6BB5");
@@ -25069,7 +25078,8 @@ function normalizeSiteUrl(value) {
 var name = "ark-play";
 var inject = ["tools"];
 var Config = Schema.object({
-  url: Schema.string().default("").description("\u6E38\u620F\u7AD9\u94FE\u63A5\uFF08HTTPS / WSS\uFF09").comment("\u4F8B\u5982 https://ark.harco.top\uFF0C\u81EA\u52A8\u8FDE\u63A5 /ws\u3002\u4FDD\u5B58\u540E\u7528\u4E8E\u4E0B\u4E00\u76D8\uFF0C\u5F53\u524D\u5BF9\u5C40\u7EE7\u7EED\u4F7F\u7528\u539F\u7AD9\u70B9\u3002\u7559\u7A7A\u7EE7\u627F\u73AF\u5883\u53D8\u91CF\u6216\u5BA2\u6237\u7AEF\u914D\u7F6E\u3002").volatile(),
+  url: Schema.string().default(DEFAULT_SITE_URL).description("\u6E38\u620F\u7AD9\u94FE\u63A5\uFF08HTTPS / WSS\uFF09").comment("\u9ED8\u8BA4 https://ark.minyako.top\uFF0C\u81EA\u52A8\u8FDE\u63A5 /ws\u3002\u4FDD\u5B58\u540E\u7528\u4E8E\u4E0B\u4E00\u76D8\uFF0C\u5F53\u524D\u5BF9\u5C40\u7EE7\u7EED\u4F7F\u7528\u539F\u7AD9\u70B9\u3002\u7559\u7A7A\u7EE7\u627F\u73AF\u5883\u53D8\u91CF\u6216\u5BA2\u6237\u7AEF\u914D\u7F6E\u3002").volatile(),
+  roomCode: Schema.string().default("").description("\u623F\u95F4\u53F7\uFF08\u7559\u7A7A\u5F00\u5355\u4EBA\u5C40\uFF09").volatile(),
   // Existing composition/file-based setup remains available to headless users.
   configFile: Schema.string(),
   name: Schema.string(),
@@ -25094,11 +25104,14 @@ function harnessSchema(value) {
 function apply(ctx, config2 = {}) {
   const runtimes = /* @__PURE__ */ new Map();
   function options() {
-    const { url: url2, ...rest } = config2;
+    const { url: url2, roomCode, ...rest } = config2;
+    const code = String((roomCode && typeof roomCode.get === "function" ? roomCode.get() : roomCode) || "").trim().toUpperCase();
+    if (code && !/^[A-Z0-9]{4}$/.test(code)) throw new Error("\u623F\u95F4\u53F7\u987B\u4E3A\u56DB\u4F4D\u5B57\u6BCD\u6216\u6570\u5B57");
     const endpoint = normalizeSiteUrl(url2 && typeof url2.get === "function" ? url2.get() : url2);
     return {
       ...Object.fromEntries(Object.entries(rest).filter(([, value]) => value !== void 0)),
       ...endpoint ? { url: endpoint } : {},
+      roomCode: code,
       client: "dsh-plugin"
     };
   }
@@ -25107,13 +25120,14 @@ function apply(ctx, config2 = {}) {
     if (!exec.agent) throw new Error("Ark Play requires a DSH execution agent identity");
     const previous = runtimes.get(exec.agent);
     const next = options();
-    if (previous && toolName === "ark_start" && !previous.client.inCall && (previous.client.result || previous.settingUrl !== (next.url || "") && !previous.client.room?.inMatch && !previous.client.uncertain && !previous.client.replaced && !previous.client.sessionLost)) {
+    if (previous && toolName === "ark_start" && !previous.client.inCall && (previous.client.result || (previous.settingUrl !== (next.url || "") || previous.settingRoomCode !== next.roomCode) && !previous.client.room?.inMatch && !previous.client.uncertain && !previous.client.replaced && !previous.client.sessionLost)) {
       await previous.close();
       runtimes.delete(exec.agent);
     }
     if (!runtimes.has(exec.agent)) {
       const created = createTools(next);
       created.settingUrl = next.url || "";
+      created.settingRoomCode = next.roomCode;
       runtimes.set(exec.agent, created);
     }
     return runtimes.get(exec.agent);

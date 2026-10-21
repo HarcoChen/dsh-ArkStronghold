@@ -1,5 +1,5 @@
 import {build} from 'esbuild';
-import {mkdir,copyFile,writeFile,readFile,rm,chmod} from 'node:fs/promises';
+import {mkdir,copyFile,writeFile,readFile,rm,chmod,cp} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {join,dirname} from 'node:path';
 import {copySource} from '@harco/ark-play-core/build-package';
@@ -16,9 +16,12 @@ await build({entryPoints:{'site-worker':join(shared,'src/site-worker.mjs'),'site
   outExtension:{'.js':'.mjs'},bundle:true,platform:'node',format:'esm',target:'node22'});
 // DSH loads browser plugins through its shared module table (including React).
 await build({entryPoints:[join(root,'client.mjs')],outfile:join(root,'dist/client.js'),bundle:true,
-  platform:'browser',format:'cjs',target:'es2022',external:['react'],
+  platform:'browser',format:'cjs',target:'es2022',external:['react'],loader:{'.png':'dataurl'},
   banner:{js:'window.__ModuleLoader__.load({id:"dsh-ark-stronghold",factory:(require)=>{const module={exports:{}};const exports=module.exports;'},
   footer:{js:'return module.exports;}});'}});
+// Keep the original artwork and its notice alongside the embedded client in release archives.
+await rm(join(root,'dist/public'),{recursive:true,force:true});
+await cp(join(root,'public'),join(root,'dist/public'),{recursive:true});
 await writeNotices(join(root,'node_modules'),join(root,'dist/THIRD_PARTY_LICENSES.txt'));
 await copyFile(join(root,'cordis.patch.yml'),join(root,'dist/cordis.patch.yml'));
 await copyFile(join(shared,'tools/configure.mjs'),join(root,'configure.mjs'));

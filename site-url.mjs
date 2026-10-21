@@ -1,7 +1,9 @@
+export const DEFAULT_SITE_URL='https://ark.minyako.top';
+
 export function normalizeSiteUrl(value) {
   const input=String(value??'').trim();
   if(!input)return '';
-  let url;try{url=new URL(input);}catch{throw new Error('请输入完整的游戏站网址，例如 https://ark.harco.top');}
+  let url;try{url=new URL(input);}catch{throw new Error('请输入完整的游戏站网址，例如 https://ark.minyako.top');}
   if(url.username||url.password||url.search||url.hash||!['/','/ws','/ws/'].includes(url.pathname)) {
     throw new Error('游戏站地址只支持站点根路径或 /ws，不能包含账号、查询参数或片段');
   }

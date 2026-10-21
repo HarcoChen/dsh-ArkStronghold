@@ -63,7 +63,8 @@
     "PUBLISH.md",
     "client.mjs",
     "site-url.mjs",
-    "site-loader.mjs"
+    "site-loader.mjs",
+    "public"
   ],
   "bin": {
     "ark-play-configure": "./configure.mjs"
