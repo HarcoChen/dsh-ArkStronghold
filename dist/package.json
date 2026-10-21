@@ -1,8 +1,13 @@
 {
   "name": "dsh-ark-stronghold",
-  "version": "0.2.0-alpha.1",
+  "version": "0.2.0-alpha.8",
   "type": "module",
   "main": "./index.mjs",
+  "exports": {
+    ".": "./index.mjs",
+    "./client": "./client.js",
+    "./package.json": "./package.json"
+  },
   "license": "GPL-3.0-or-later",
   "engines": {
     "node": ">=22",
@@ -12,6 +17,13 @@
     "bundle": {
       "patch": "./cordis.patch.yml"
     },
-    "manifestVersion": 1
+    "manifestVersion": 1,
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-sidebar",
+        "@deepseek-ai/dsh-client-ui-settings"
+      ]
+    }
   }
 }

@@ -18,11 +18,11 @@ var __export = (target, all) => {
   for (var name2 in all)
     __defProp(target, name2, { get: all[name2], enumerable: true });
 };
-var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+var __copyProps = (to, from2, except, desc) => {
+  if (from2 && typeof from2 === "object" || typeof from2 === "function") {
+    for (let key of __getOwnPropNames(from2))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, { get: () => from2[key], enumerable: !(desc = __getOwnPropDesc(from2, key)) || desc.enumerable });
   }
   return to;
 };
@@ -1458,7 +1458,7 @@ var require_sender = __commonJS({
        */
       static frame(data, options) {
         let mask;
-        let merge2 = false;
+        let merge3 = false;
         let offset = 2;
         let skipMasking = false;
         if (options.mask) {
@@ -1491,7 +1491,7 @@ var require_sender = __commonJS({
           }
         } else {
           dataLength = data.length;
-          merge2 = options.mask && options.readOnly && !skipMasking;
+          merge3 = options.mask && options.readOnly && !skipMasking;
         }
         let payloadLength = dataLength;
         if (dataLength >= 65536) {
@@ -1501,7 +1501,7 @@ var require_sender = __commonJS({
           offset += 2;
           payloadLength = 126;
         }
-        const target = Buffer.allocUnsafe(merge2 ? dataLength + offset : offset);
+        const target = Buffer.allocUnsafe(merge3 ? dataLength + offset : offset);
         target[0] = options.fin ? options.opcode | 128 : options.opcode;
         if (options.rsv1) target[0] |= 64;
         target[1] = payloadLength;
@@ -1518,7 +1518,7 @@ var require_sender = __commonJS({
         target[offset - 2] = mask[2];
         target[offset - 1] = mask[3];
         if (skipMasking) return [target, data];
-        if (merge2) {
+        if (merge3) {
           applyMask(data, mask, target, offset, dataLength);
           return [target];
         }
@@ -1760,7 +1760,7 @@ var require_sender = __commonJS({
       getBlobData(blob, compress, options, cb) {
         this._bufferedBytes += options[kByteLength];
         this._state = GET_BLOB_DATA;
-        blob.arrayBuffer().then((arrayBuffer) => {
+        blob.arrayBuffer().then((arrayBuffer2) => {
           if (this._socket.destroyed) {
             const err = new Error(
               "The socket was closed while the blob was being read"
@@ -1769,7 +1769,7 @@ var require_sender = __commonJS({
             return;
           }
           this._bufferedBytes -= options[kByteLength];
-          const data = toBuffer(arrayBuffer);
+          const data = toBuffer(arrayBuffer2);
           if (!compress) {
             this._state = DEFAULT;
             this.sendFrame(_Sender.frame(data, options), cb);
@@ -2117,7 +2117,7 @@ var require_extension = __commonJS({
   "node_modules/ws/lib/extension.js"(exports, module) {
     "use strict";
     var { tokenChars } = require_validation();
-    function push(dest, name2, elem) {
+    function push2(dest, name2, elem) {
       if (dest[name2] === void 0) dest[name2] = [elem];
       else dest[name2].push(elem);
     }
@@ -2147,7 +2147,7 @@ var require_extension = __commonJS({
             if (end === -1) end = i;
             const name2 = header.slice(start, end);
             if (code === 44) {
-              push(offers, name2, params);
+              push2(offers, name2, params);
               params = /* @__PURE__ */ Object.create(null);
             } else {
               extensionName = name2;
@@ -2166,9 +2166,9 @@ var require_extension = __commonJS({
               throw new SyntaxError(`Unexpected character at index ${i}`);
             }
             if (end === -1) end = i;
-            push(params, header.slice(start, end), true);
+            push2(params, header.slice(start, end), true);
             if (code === 44) {
-              push(offers, extensionName, params);
+              push2(offers, extensionName, params);
               params = /* @__PURE__ */ Object.create(null);
               extensionName = void 0;
             }
@@ -2214,9 +2214,9 @@ var require_extension = __commonJS({
               value = value.replace(/\\/g, "");
               mustUnescape = false;
             }
-            push(params, paramName, value);
+            push2(params, paramName, value);
             if (code === 44) {
-              push(offers, extensionName, params);
+              push2(offers, extensionName, params);
               params = /* @__PURE__ */ Object.create(null);
               extensionName = void 0;
             }
@@ -2233,16 +2233,16 @@ var require_extension = __commonJS({
       if (end === -1) end = i;
       const token = header.slice(start, end);
       if (extensionName === void 0) {
-        push(offers, token, params);
+        push2(offers, token, params);
       } else {
         if (paramName === void 0) {
-          push(params, token, true);
+          push2(params, token, true);
         } else if (mustUnescape) {
-          push(params, paramName, token.replace(/\\/g, ""));
+          push2(params, paramName, token.replace(/\\/g, ""));
         } else {
-          push(params, paramName, token);
+          push2(params, paramName, token);
         }
-        push(offers, extensionName, params);
+        push2(offers, extensionName, params);
       }
       return offers;
     }
@@ -2729,8 +2729,8 @@ var require_websocket = __commonJS({
       "protocol",
       "readyState",
       "url"
-    ].forEach((property) => {
-      Object.defineProperty(WebSocket2.prototype, property, { enumerable: true });
+    ].forEach((property2) => {
+      Object.defineProperty(WebSocket2.prototype, property2, { enumerable: true });
     });
     ["open", "error", "close", "message"].forEach((method) => {
       Object.defineProperty(WebSocket2.prototype, `on${method}`, {
@@ -6155,8 +6155,8 @@ var $ZodCheckUpperCase = /* @__PURE__ */ $constructor("$ZodCheckUpperCase", (ins
 var $ZodCheckIncludes = /* @__PURE__ */ $constructor("$ZodCheckIncludes", (inst, def) => {
   $ZodCheck.init(inst, def);
   const escapedRegex = escapeRegex(def.includes);
-  const pattern = new RegExp(typeof def.position === "number" ? `^.{${def.position},}${escapedRegex}` : escapedRegex);
-  def.pattern = pattern;
+  const pattern2 = new RegExp(typeof def.position === "number" ? `^.{${def.position},}${escapedRegex}` : escapedRegex);
+  def.pattern = pattern2;
   inst._zod.check = (payload) => {
     if (payload.value.includes(def.includes, def.position))
       return;
@@ -6173,8 +6173,8 @@ var $ZodCheckIncludes = /* @__PURE__ */ $constructor("$ZodCheckIncludes", (inst,
 });
 var $ZodCheckStartsWith = /* @__PURE__ */ $constructor("$ZodCheckStartsWith", (inst, def) => {
   $ZodCheck.init(inst, def);
-  const pattern = new RegExp(`^${escapeRegex(def.prefix)}.*`);
-  def.pattern ?? (def.pattern = pattern);
+  const pattern2 = new RegExp(`^${escapeRegex(def.prefix)}.*`);
+  def.pattern ?? (def.pattern = pattern2);
   inst._zod.check = (payload) => {
     if (payload.value.startsWith(def.prefix))
       return;
@@ -6191,8 +6191,8 @@ var $ZodCheckStartsWith = /* @__PURE__ */ $constructor("$ZodCheckStartsWith", (i
 });
 var $ZodCheckEndsWith = /* @__PURE__ */ $constructor("$ZodCheckEndsWith", (inst, def) => {
   $ZodCheck.init(inst, def);
-  const pattern = new RegExp(`.*${escapeRegex(def.suffix)}$`);
-  def.pattern ?? (def.pattern = pattern);
+  const pattern2 = new RegExp(`.*${escapeRegex(def.suffix)}$`);
+  def.pattern ?? (def.pattern = pattern2);
   inst._zod.check = (payload) => {
     if (payload.value.endsWith(def.suffix))
       return;
@@ -6207,9 +6207,9 @@ var $ZodCheckEndsWith = /* @__PURE__ */ $constructor("$ZodCheckEndsWith", (inst,
     });
   };
 });
-function handleCheckPropertyResult(result, payload, property) {
+function handleCheckPropertyResult(result, payload, property2) {
   if (result.issues.length) {
-    payload.issues.push(...prefixIssues(property, result.issues));
+    payload.issues.push(...prefixIssues(property2, result.issues));
   }
 }
 var $ZodCheckProperty = /* @__PURE__ */ $constructor("$ZodCheckProperty", (inst, def) => {
@@ -8273,8 +8273,8 @@ var $ZodOptional = /* @__PURE__ */ $constructor("$ZodOptional", (inst, def) => {
     return values ? /* @__PURE__ */ new Set([...values, void 0]) : void 0;
   });
   defineLazyInternal(inst, "pattern", (zod) => {
-    const pattern = zod.def.innerType._zod.pattern;
-    return pattern ? new RegExp(`^(${cleanRegex(pattern.source)})?$`) : void 0;
+    const pattern2 = zod.def.innerType._zod.pattern;
+    return pattern2 ? new RegExp(`^(${cleanRegex(pattern2.source)})?$`) : void 0;
   });
   inst._zod.parse = (payload, ctx) => {
     if (payload.value === void 0) {
@@ -8301,8 +8301,8 @@ var $ZodNullable = /* @__PURE__ */ $constructor("$ZodNullable", (inst, def) => {
   defineLazyInternal(inst, "optin", (zod) => zod.def.innerType._zod.optin);
   defineLazyInternal(inst, "optout", (zod) => zod.def.innerType._zod.optout);
   defineLazyInternal(inst, "pattern", (zod) => {
-    const pattern = zod.def.innerType._zod.pattern;
-    return pattern ? new RegExp(`^(${cleanRegex(pattern.source)}|null)$`) : void 0;
+    const pattern2 = zod.def.innerType._zod.pattern;
+    return pattern2 ? new RegExp(`^(${cleanRegex(pattern2.source)}|null)$`) : void 0;
   });
   defineLazyInternal(inst, "values", (zod) => {
     return zod.def.innerType._zod.values ? /* @__PURE__ */ new Set([...zod.def.innerType._zod.values, null]) : void 0;
@@ -8547,14 +8547,14 @@ function handleReadonlyResult(payload) {
 }
 function leafPattern(schema) {
   const def = schema._zod.def;
-  let pattern = def.pattern;
+  let pattern2 = def.pattern;
   let isInt = !!def.format?.includes("int");
   let minimum;
   let maximum;
   for (const ch of def.checks ?? []) {
     const d = ch._zod.def;
     if (d.pattern)
-      pattern = d.pattern;
+      pattern2 = d.pattern;
     isInt || (isInt = !!d.format?.includes("int"));
     const lo = d.minimum ?? d.length;
     const hi = d.maximum ?? d.length;
@@ -8563,8 +8563,8 @@ function leafPattern(schema) {
     if (hi !== void 0 && (maximum === void 0 || hi < maximum))
       maximum = hi;
   }
-  if (pattern)
-    return pattern.source;
+  if (pattern2)
+    return pattern2.source;
   if (minimum !== void 0 && maximum !== void 0 && minimum > maximum)
     return "(?!)";
   if (minimum !== void 0 || maximum !== void 0)
@@ -8785,7 +8785,7 @@ var recursive = /* @__PURE__ */ new WeakMap();
 var NONE = 0;
 var ASSUMED = 1;
 var PROVEN = 2;
-function isRecursive(inst, stack, resolve) {
+function isRecursive(inst, stack, resolve2) {
   const cached2 = recursive.get(inst);
   if (cached2 !== void 0)
     return cached2 ? PROVEN : NONE;
@@ -8795,7 +8795,7 @@ function isRecursive(inst, stack, resolve) {
   let result = NONE;
   const check2 = (child) => {
     if (result !== PROVEN && child?._zod) {
-      const answer = isRecursive(child, stack, resolve);
+      const answer = isRecursive(child, stack, resolve2);
       if (answer > result)
         result = answer;
     }
@@ -8806,13 +8806,13 @@ function isRecursive(inst, stack, resolve) {
       const desc = Object.getOwnPropertyDescriptor(sh, key);
       if (spread && !desc.enumerable)
         continue;
-      const child = desc.get ? ASSUMED : desc.value?._zod ? isRecursive(desc.value, stack, resolve) : NONE;
+      const child = desc.get ? ASSUMED : desc.value?._zod ? isRecursive(desc.value, stack, resolve2) : NONE;
       if (child > answer)
         answer = child;
     }
     return answer;
   };
-  const merge2 = (answer) => {
+  const merge3 = (answer) => {
     if (answer > result)
       result = answer;
   };
@@ -8821,7 +8821,7 @@ function isRecursive(inst, stack, resolve) {
   switch (kind) {
     case "object": {
       const raw = rawShape(def);
-      merge2(raw ? shape(raw, true) : ASSUMED);
+      merge3(raw ? shape(raw, true) : ASSUMED);
       check2(def.catchall);
       break;
     }
@@ -8870,8 +8870,8 @@ function isRecursive(inst, stack, resolve) {
       break;
     // `$ZodLazy` caches its inner on the def, so a resolved edge is followed exactly
     case "lazy": {
-      const inner = def._cachedInner ?? (resolve ? inst._zod.innerType : void 0);
-      merge2(inner ? isRecursive(inner, stack, false) : ASSUMED);
+      const inner = def._cachedInner ?? (resolve2 ? inst._zod.innerType : void 0);
+      merge3(inner ? isRecursive(inner, stack, false) : ASSUMED);
       break;
     }
     // a leaf by choice: `parts` are regex fragments, not data positions
@@ -16686,9 +16686,9 @@ function compileValidator(schema, parser) {
 function compile(schema, options) {
   try {
     const parser = compileFn(schema);
-    const clone2 = withParser(schema, parser);
-    clone2._zod.bag.validator = compileValidator(schema, parser);
-    return clone2;
+    const clone3 = withParser(schema, parser);
+    clone3._zod.bag.validator = compileValidator(schema, parser);
+    return clone3;
   } catch (err) {
     if (options?.strict)
       throw err;
@@ -16699,7 +16699,7 @@ function withParser(schema, parser) {
   if (isRecursiveSchema(schema)) {
     throw new ZodCompileUnsupportedError("a schema whose subtree contains a reference cycle");
   }
-  const clone2 = clone(schema);
+  const clone3 = clone(schema);
   const liveRun = schema._zod.run;
   const originalRun = liveRun.__originalRun ?? liveRun;
   const wrapped = (payload, ctx) => {
@@ -16719,12 +16719,12 @@ function withParser(schema, parser) {
     return originalRun(payload, ctx);
   };
   wrapped.__originalRun = originalRun;
-  clone2._zod.bag.fallbackRun = originalRun;
-  clone2._zod.bag.validator = parser;
-  clone2._zod.run = wrapped;
+  clone3._zod.bag.fallbackRun = originalRun;
+  clone3._zod.bag.validator = parser;
+  clone3._zod.run = wrapped;
   if (!liveRun.__originalRun)
-    installCompiledUserMethods(clone2, schema, parser);
-  return clone2;
+    installCompiledUserMethods(clone3, schema, parser);
+  return clone3;
 }
 function installCompiledUserMethods(target, source, parser) {
   const targetAny = target;
@@ -18143,9 +18143,9 @@ function generateFileCheck(doc, accessor) {
 }
 function generateTemplateLiteralCheck(doc, ctx, schema, accessor) {
   doc.write(`if (typeof ${accessor} !== "string") return INVALID;`);
-  const pattern = schema._zod.pattern;
-  if (pattern) {
-    const patternConst = addConstant(ctx, pattern);
+  const pattern2 = schema._zod.pattern;
+  if (pattern2) {
+    const patternConst = addConstant(ctx, pattern2);
     doc.write(`${patternConst}.lastIndex = 0;`);
     doc.write(`if (!${patternConst}.test(${accessor})) return INVALID;`);
   }
@@ -18871,12 +18871,12 @@ function _length(length, params) {
   });
 }
 // @__NO_SIDE_EFFECTS__
-function _regex(pattern, params) {
+function _regex(pattern2, params) {
   return new $ZodCheckRegex({
     check: "string_format",
     format: "regex",
     ...normalizeParams(params),
-    pattern
+    pattern: pattern2
   });
 }
 // @__NO_SIDE_EFFECTS__
@@ -18923,10 +18923,10 @@ function _endsWith(suffix, params) {
   });
 }
 // @__NO_SIDE_EFFECTS__
-function _property(property, schema, params) {
+function _property(property2, schema, params) {
   return new $ZodCheckProperty({
     check: "property",
-    property,
+    property: property2,
     schema,
     ...normalizeParams(params)
   });
@@ -19552,10 +19552,10 @@ function compactTypeUnion(schema) {
 var FOLDABLE_KEYS = /* @__PURE__ */ new Set(["type", "properties", "required", "additionalProperties"]);
 var UNION_KEYS = ["oneOf", "anyOf"];
 function undeclaredConstraint(member) {
-  const extra = member.additionalProperties;
-  if (extra === void 0 || extra === false || typeof extra !== "object" || extra === null)
+  const extra2 = member.additionalProperties;
+  if (extra2 === void 0 || extra2 === false || typeof extra2 !== "object" || extra2 === null)
     return null;
-  return Object.keys(extra).length ? extra : null;
+  return Object.keys(extra2).length ? extra2 : null;
 }
 function foldObjects(members2) {
   const objects = [];
@@ -19877,9 +19877,9 @@ var addDivisor = (agg, value) => {
   if (!agg.multipleOf.includes(value))
     agg.multipleOf.push(value);
 };
-var addPattern = (agg, pattern) => {
+var addPattern = (agg, pattern2) => {
   agg.patterns ?? (agg.patterns = /* @__PURE__ */ new Set());
-  agg.patterns.add(pattern);
+  agg.patterns.add(pattern2);
 };
 var intersectMime = (agg, mime) => {
   agg.mime = agg.mime ? agg.mime.filter((m) => mime.includes(m)) : [...mime];
@@ -19944,8 +19944,8 @@ function aggregateChecks(schema) {
   }
   if (bag.mime)
     intersectMime(agg, bag.mime);
-  for (const pattern of bag.patterns ?? [])
-    addPattern(agg, pattern);
+  for (const pattern2 of bag.patterns ?? [])
+    addPattern(agg, pattern2);
   return agg;
 }
 var formatMap = {
@@ -20127,11 +20127,11 @@ var nanProcessor = (schema, ctx, json2, params) => {
 };
 var templateLiteralProcessor = (schema, _ctx, json2, _params) => {
   const _json = json2;
-  const pattern = schema._zod.pattern;
-  if (!pattern)
+  const pattern2 = schema._zod.pattern;
+  if (!pattern2)
     throw new Error("Pattern not found in template literal");
   _json.type = "string";
-  _json.pattern = pattern.source;
+  _json.pattern = pattern2.source;
 };
 var fileProcessor = (schema, _ctx, json2, _params) => {
   const _json = json2;
@@ -20402,8 +20402,8 @@ var recordProcessor = (schema, ctx, _json, params) => {
       path: [...params.path, "patternProperties", "*"]
     });
     json2.patternProperties = {};
-    for (const pattern of patterns) {
-      assignProp(json2.patternProperties, exactPattern(pattern).source, valueSchema);
+    for (const pattern2 of patterns) {
+      assignProp(json2.patternProperties, exactPattern(pattern2).source, valueSchema);
     }
   } else {
     if (ctx.target === "draft-07" || ctx.target === "draft-2020-12") {
@@ -22983,9 +22983,9 @@ function convertBaseSchema(schema, ctx) {
         const patternProps = schema.patternProperties;
         const patternKeys = Object.keys(patternProps);
         const looseRecords = [];
-        for (const pattern of patternKeys) {
-          const patternValue = convertSchema(patternProps[pattern], ctx);
-          const keySchema = z.string().regex(new RegExp(pattern));
+        for (const pattern2 of patternKeys) {
+          const patternValue = convertSchema(patternProps[pattern2], ctx);
+          const keySchema = z.string().regex(new RegExp(pattern2));
           looseRecords.push(z.looseRecord(keySchema, patternValue));
         }
         const schemasToIntersect = [];
@@ -23493,7 +23493,7 @@ var SiteRuntime = class {
     this.index = index2;
     const worker = new Worker(new URL("./site-worker.mjs", import.meta.url), { workerData: { origin: this.origin, headers: this.headers, index: index2, raw } });
     this.worker = worker;
-    this.ready = await new Promise((resolve, reject) => {
+    this.ready = await new Promise((resolve2, reject) => {
       const timeout = setTimeout(() => reject(new Error("Upstream client loading timed out")), 6e4);
       worker.on("error", (e) => {
         clearTimeout(timeout);
@@ -23510,7 +23510,7 @@ var SiteRuntime = class {
       worker.on("message", (m) => {
         if (m.type === "ready") {
           clearTimeout(timeout);
-          resolve(m);
+          resolve2(m);
         } else if (m.type === "report") this.onReport(m.message);
         else if (m.type === "failure") this.fail(m.error);
         else if (m.type === "reply") {
@@ -23539,12 +23539,12 @@ var SiteRuntime = class {
   request(op, payload = {}) {
     if (!this.worker) throw new Error("Site runtime unavailable");
     const id = ++this.counter;
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve2, reject) => {
       const timer = setTimeout(() => {
         this.pending.delete(id);
         reject(new Error("Site runtime timed out"));
       }, 1e4);
-      this.pending.set(id, { resolve, reject, timer });
+      this.pending.set(id, { resolve: resolve2, reject, timer });
       this.worker.postMessage({ op, id, ...payload });
     });
   }
@@ -23559,7 +23559,7 @@ var SiteRuntime = class {
 // node_modules/@harco/ark-play-core/src/native-view.mjs
 var VIEW = "ark-play-native-compact/v1";
 function canAct(pub, own2, myId, result) {
-  if (!pub || !own2 || result || !own2.alive) return false;
+  if (!pub || !own2 || result || !own2.alive || pub.paused) return false;
   if (own2.personalChoice) return true;
   if (pub.phase === "INFO_CHECK") return !pub.players.find((p) => p.playerId === myId)?.ready;
   if (pub.phase === "BAND_DRAFT") return pub.draft?.turn === myId && !pub.draft.picks[myId];
@@ -23600,6 +23600,7 @@ function projectNative({ pub, own: own2, myId, result, revision, room, runtime, 
     phase: pub.phase,
     round: pub.round,
     terminal: !!result,
+    paused: !!pub.paused,
     canAct: canAct(pub, own2, myId, result),
     me: {
       hp: own2.lp,
@@ -23645,7 +23646,7 @@ function projectNative({ pub, own: own2, myId, result, revision, room, runtime, 
 }
 
 // node_modules/@harco/ark-play-core/src/rpc.mjs
-var pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+var pause = (ms) => new Promise((resolve2) => setTimeout(resolve2, ms));
 var PUBLIC_KEYS = [
   "phase",
   "round",
@@ -23709,6 +23710,34 @@ var GameClient = class {
     this.nextSend = 0;
     this.combatQueue = [];
     this.authorities = /* @__PURE__ */ new Set();
+    this.stateWaiters = /* @__PURE__ */ new Set();
+  }
+  wake() {
+    for (const notify of [...this.stateWaiters]) notify();
+  }
+  fail(message) {
+    this.siteError = String(message);
+    this.wake();
+  }
+  changed(signal) {
+    signal?.throwIfAborted();
+    return new Promise((resolve2, reject) => {
+      const cleanup = () => {
+        this.stateWaiters.delete(notify);
+        signal?.removeEventListener("abort", abort);
+      };
+      const notify = () => {
+        cleanup();
+        resolve2();
+      };
+      const abort = () => {
+        cleanup();
+        reject(signal.reason);
+      };
+      this.stateWaiters.add(notify);
+      signal?.addEventListener("abort", abort, { once: true });
+      if (signal?.aborted) abort();
+    });
   }
   update(key, value) {
     if (JSON.stringify(this[key]) !== JSON.stringify(value)) {
@@ -23716,6 +23745,7 @@ var GameClient = class {
       this.revision++;
     }
     this.lastPush = Date.now();
+    this.wake();
   }
   receive(m) {
     if (m.t === "welcome") {
@@ -23776,7 +23806,7 @@ var GameClient = class {
         try {
           this.receive(JSON.parse(bytes.toString()));
         } catch {
-          this.siteError = "Unsupported server message";
+          this.fail("Unsupported server message");
           ws.close();
         }
       });
@@ -23793,9 +23823,10 @@ var GameClient = class {
         if (this.pending.size) this.uncertain = true;
         this.pending.clear();
         this.authorities.clear();
+        this.wake();
       });
-      await new Promise((resolve, reject) => {
-        ws.once("open", resolve);
+      await new Promise((resolve2, reject) => {
+        ws.once("open", resolve2);
         ws.once("error", reject);
       });
       await this.request({ t: "hello", name: this.name, version: 1, noReplace: true, ...this.sessionToken ? { token: this.sessionToken } : {} });
@@ -23807,9 +23838,7 @@ var GameClient = class {
       if (!this.site || this.site.index?.cs !== cs) {
         if (this.site) await this.site.close();
         this.siteError = null;
-        const site = new SiteRuntime(this.origin, this.headers, (m) => this.report(m), (e) => {
-          this.siteError = e;
-        });
+        const site = new SiteRuntime(this.origin, this.headers, (m) => this.report(m), (e) => this.fail(e));
         this.site = site;
         try {
           await site.load(cs);
@@ -23838,13 +23867,13 @@ var GameClient = class {
       await pause(Math.max(0, this.nextSend - Date.now()));
       this.nextSend = Date.now() + 40;
       if (!ws || ws !== this.ws || ws.readyState !== wrapper_default.OPEN) throw new Error("Game connection unavailable");
-      return await new Promise((resolve, reject) => {
+      return await new Promise((resolve2, reject) => {
         const timer = setTimeout(() => {
           this.pending.delete(rid);
           this.uncertain = true;
           reject(new Error("Native request timed out; use ark_view and do not blindly retry"));
         }, 15e3);
-        this.pending.set(rid, { resolve, reject, timer });
+        this.pending.set(rid, { resolve: resolve2, reject, timer });
         ws.send(JSON.stringify({ ...message, rid }), (error62) => {
           if (error62) {
             this.pending.delete(rid);
@@ -23860,9 +23889,7 @@ var GameClient = class {
   }
   report(message) {
     if (!this.authorities.has(message.battleId) || !this.ws || this.pub?.paused) return;
-    this.request(message).catch((e) => {
-      this.siteError = "Site did not accept combat report: " + e.message;
-    });
+    this.request(message).catch((e) => this.fail("Site did not accept combat report: " + e.message));
   }
   // A native ack is not a state frame: coalesce the public/private push burst.
   async quiet() {
@@ -23874,18 +23901,20 @@ var GameClient = class {
   async view() {
     await this.quiet();
     if (!this.pub || !this.own) return { status: "lobby", roomCode: this.room?.code || null, protocol: this.site?.ready?.protocol, application: this.site?.ready?.app };
-    const snapshot = structuredClone({ pub: this.pub, own: this.own, result: this.result, room: this.room || { code: "ended" }, revision: this.revision });
-    const map2 = await this.site.request("map", { pub: snapshot.pub, own: snapshot.own, myId: this.myId });
-    return { ...projectNative({ ...snapshot, myId: this.myId, runtime: this.site, map: map2 }), ...this.siteError ? { notice: this.siteError } : {} };
+    const snapshot2 = structuredClone({ pub: this.pub, own: this.own, result: this.result, room: this.room || { code: "ended" }, revision: this.revision });
+    const map2 = await this.site.request("map", { pub: snapshot2.pub, own: snapshot2.own, myId: this.myId });
+    return { ...projectNative({ ...snapshot2, myId: this.myId, runtime: this.site, map: map2 }), ...this.siteError ? { notice: this.siteError } : {} };
   }
-  async wait(signal, seconds = 25) {
+  async settle(signal, readyRound) {
     await this.quiet();
-    const end = Date.now() + seconds * 1e3;
-    while (!this.result && !canAct(this.pub, this.own, this.myId, this.result) && Date.now() < end) {
+    for (; ; ) {
       signal?.throwIfAborted();
-      if (!this.ws) throw new Error("Connection lost while waiting; use ark_view");
-      if (this.siteError) break;
-      await pause(100);
+      if (this.siteError) throw new Error(this.siteError + "; recover with ark_view, do not repeat accepted actions");
+      if (!this.ws || this.ws.readyState !== wrapper_default.OPEN) throw new Error("Connection lost during settlement; recover with ark_view, do not repeat accepted actions");
+      const oldPrep = readyRound !== void 0 && this.pub?.round === readyRound && this.pub?.phase === "PREP" && !this.own?.personalChoice;
+      if (this.result || this.pub?.paused || !this.room?.inMatch && !this.pub || !oldPrep && canAct(this.pub, this.own, this.myId, this.result)) return;
+      await this.changed(signal);
+      await this.quiet();
     }
   }
   normalize(action2) {
@@ -23928,6 +23957,7 @@ var GameClient = class {
       }
       if (this.room?.content?.vanilla === false) throw new Error("Gameplay plugin content sets are not supported by this client version");
       if (payload.op === "view") {
+        await this.settle(signal);
         const result = await this.view();
         this.uncertain = false;
         return result;
@@ -23942,7 +23972,7 @@ var GameClient = class {
         this.revision++;
         await this.request({ t: "room.create", mode: "solo", difficulty: payload.difficulty || "ABYSS" });
         await this.request({ t: "room.start" });
-        await this.wait(signal, 5);
+        await this.settle(signal);
         return await this.view();
       }
       if (payload.op === "lookup") {
@@ -23976,10 +24006,6 @@ var GameClient = class {
         });
         return { result: { kind, entries } };
       }
-      if (payload.op === "advance") {
-        await this.wait(signal);
-        return await this.view();
-      }
       if (payload.op !== "act") throw new Error("Unsupported gameplay operation");
       await this.quiet();
       if (payload.revision !== this.revision) return { ...await this.view(), error: "STALE_CLIENT_SNAPSHOT", executed: [] };
@@ -23990,6 +24016,7 @@ var GameClient = class {
       }
       if (payload.revision !== this.revision) return { ...await this.view(), error: "STALE_CLIENT_SNAPSHOT", executed: [] };
       const executed = [];
+      let readyRound;
       for (const step of payload.steps) {
         signal?.throwIfAborted();
         if (!canAct(this.pub, this.own, this.myId, this.result)) break;
@@ -23999,15 +24026,16 @@ var GameClient = class {
         try {
           await this.request(message);
           executed.push({ action: step.action, reason: step.reason, accepted: true });
+          if (step.action.type === "ready") readyRound = round;
         } catch (e) {
           if (!e.code) throw e;
           executed.push({ action: step.action, reason: step.reason, accepted: false, result: { error: e.code, detail: e.detail } });
           break;
         }
         await this.quiet();
-        if (this.pub.phase !== phase || this.pub.round !== round || this.result || !canAct(this.pub, this.own, this.myId, this.result)) break;
+        if (readyRound !== void 0 || this.pub.phase !== phase || this.pub.round !== round || this.result || !canAct(this.pub, this.own, this.myId, this.result)) break;
       }
-      if (payload.advance !== false) await this.wait(signal);
+      await this.settle(signal, readyRound);
       return { ...await this.view(), executed, ...!executed.length ? { notice: "\u5F53\u524D\u6CA1\u6709\u53EF\u63D0\u4EA4\u7684\u73A9\u5BB6\u51B3\u7B56\uFF1B\u672C\u6279\u672A\u6267\u884C\uFF0C\u8BF7\u4F9D\u636E\u65B0\u5C40\u9762\u91CD\u65B0\u9009\u62E9\u3002" } : {} };
     } catch (e) {
       if (signal?.aborted) this.uncertain = true;
@@ -24020,6 +24048,7 @@ var GameClient = class {
     const ws = this.ws;
     this.ws = null;
     this.welcome = null;
+    this.wake();
     if (ws) {
       ws.close();
       const timer = setTimeout(() => ws.terminate(), 1e3);
@@ -24069,6 +24098,7 @@ function render(reply, previous = null, force = false) {
   }
   if (v.setup) lines.push(`\u5F00\u5C40: ${short(v.setup)}`);
   if (reply.notice) lines.push(`\u7AD9\u70B9/\u5BA2\u6237\u7AEF\u72B6\u6001: ${reply.notice}`);
+  if (v.paused) lines.push("\u6E38\u620F\u7AD9\u5DF2\u6682\u505C\uFF1A\u8BF7\u5728\u7AD9\u70B9\u6062\u590D\u540E\u8C03\u7528 ark_view\uFF1B\u5F53\u524D\u5DE5\u5177\u4E0D\u4F1A\u7ED3\u675F\u51C6\u5907\u6216\u8DF3\u8FC7\u6682\u505C\u3002");
   if (v.me.handEmpty.length === 0) lines.push("\u624B\u724C\u5DF2\u6EE1\uFF1A\u5148\u88C5\u5907/\u51FA\u552E/\u5904\u7406\u5E93\u5B58\u624D\u80FD\u8D2D\u4E70\u6216\u9886\u53D6\u9700\u7A7A\u4F4D\u7684\u5956\u52B1\u3002");
   if (v.terminal) lines.push(`\u7ED3\u7B97: ${short(v.outcome)}`);
   lines.push(`\u53EF\u8C03\u7528: ${v.available.join(", ")}\u3002\u52A8\u4F5C\u6709\u76EE\u6807\u7EA6\u675F\uFF0C\u4ECD\u53EF\u80FD\u88AB\u5F15\u64CE\u62D2\u7EDD\u3002`);
@@ -24117,22 +24147,16 @@ function createTools(config2 = {}) {
     },
     {
       name: "ark_view",
-      description: "\u6062\u590D\u5B8C\u6574\u7D27\u51D1\u5C40\u9762\uFF1B\u7528\u4E8E\u4E0A\u4E0B\u6587\u4E22\u5931\u3001\u65AD\u7EBF\u91CD\u8FDE\u6216\u52A8\u4F5C\u7ED3\u679C\u4E0D\u786E\u5B9A\u3002",
+      description: "\u6062\u590D\u5B8C\u6574\u7D27\u51D1\u5C40\u9762\uFF1B\u82E5\u6B63\u5728\u7ED3\u7B97\uFF0C\u63D2\u4EF6\u5185\u90E8\u5904\u7406\u81F3\u4E0B\u4E00\u51B3\u7B56\u6216\u7EC8\u5C40\u518D\u8FD4\u56DE\u3002\u7528\u4E8E\u4E0A\u4E0B\u6587\u4E22\u5931\u3001\u65AD\u7EBF\u91CD\u8FDE\u6216\u52A8\u4F5C\u7ED3\u679C\u4E0D\u786E\u5B9A\u3002",
       schema: external_exports.object({}),
       readOnly: true,
       execute: async (_, signal) => show(await client.call({ op: "view" }, signal), true)
     },
     {
       name: "ark_act",
-      description: "\u6309\u5F53\u524D\u672C\u5730\u5FEB\u7167revision\u6267\u884C1\u81F38\u6B65\u660E\u786E\u52A8\u4F5C\u3002\u62D2\u7EDD\u6216\u9636\u6BB5/\u56DE\u5408\u6539\u53D8\u5373\u505C\u6B62\uFF1Badvance\u8868\u793A\u7B49\u5F85\u540E\u7EED\u539F\u751F\u4E8B\u4EF6\uFF0C\u4E0D\u8DF3\u8FC7\u7AD9\u70B9\u8BA1\u65F6\u3002",
-      schema: external_exports.object({ revision: index, steps: external_exports.array(external_exports.object({ action, reason: external_exports.string().min(1).max(400) })).min(1).max(8), advance: external_exports.boolean().default(true) }),
+      description: "\u6309\u5F53\u524D\u672C\u5730\u5FEB\u7167revision\u6267\u884C1\u81F38\u6B65\u660E\u786E\u52A8\u4F5C\u3002\u62D2\u7EDD\u6216\u9636\u6BB5/\u56DE\u5408\u6539\u53D8\u5373\u505C\u6B62\u672C\u6279\uFF1Bready\u540E\u81EA\u52A8\u5B8C\u6210\u6218\u6597\u8BA1\u7B97\u3001\u4E0A\u62A5\u548C\u7ED3\u7B97\uFF0C\u8FD4\u56DE\u4E0B\u4E00\u51B3\u7B56\u5C40\u9762\u6216\u7EC8\u5C40\uFF0C\u4E0D\u9700\u8F6E\u8BE2\u3002\u7AD9\u70B9\u6682\u505C\u65F6\u8FD4\u56DE\u6682\u505C\u63D0\u793A\u3002",
+      schema: external_exports.object({ revision: index, steps: external_exports.array(external_exports.object({ action, reason: external_exports.string().min(1).max(400) })).min(1).max(8) }),
       execute: async (args, signal) => show(await client.call({ op: "act", ...args }, signal))
-    },
-    {
-      name: "ark_wait",
-      description: "\u7B49\u5F85\u6216\u8BF7\u6C42\u670D\u52A1\u5668\u63A8\u8FDB\u5230\u4E0B\u4E00\u53EF\u64CD\u4F5C\u5C40\u9762\uFF1B\u4E0D\u66FF\u73A9\u5BB6\u4F5C\u9009\u62E9\u3002",
-      schema: external_exports.object({}),
-      execute: async (_, signal) => show(await client.call({ op: "advance" }, signal))
     },
     {
       name: "ark_lookup",
@@ -24154,9 +24178,906 @@ function createTools(config2 = {}) {
   } };
 }
 
+// node_modules/@deepseek-ai/cosmokit/lib/index.js
+function isNullable(value) {
+  return value === null || value === void 0;
+}
+function isPlainObject2(data) {
+  return data && typeof data === "object" && !Array.isArray(data);
+}
+function filterKeys(object2, filter) {
+  return Object.fromEntries(Object.entries(object2).filter(([key, value]) => filter(key, value)));
+}
+function mapValues(object2, transform2) {
+  return Object.fromEntries(Object.entries(object2).map(([key, value]) => [key, transform2(value, key)]));
+}
+function pick2(source, keys, forced) {
+  if (!keys) return { ...source };
+  const result = {};
+  for (const key of keys) if (forced || source[key] !== void 0) result[key] = source[key];
+  return result;
+}
+var write = Symbol.for("cosmokit.volatile.write");
+function snapshot(value, ancestors = /* @__PURE__ */ new Set()) {
+  if (typeof value === "function") throw new TypeError("volatile config cannot contain functions");
+  if (value === null || typeof value !== "object") return value;
+  if (ancestors.has(value)) throw new TypeError("volatile config cannot contain cycles");
+  ancestors.add(value);
+  try {
+    if (Array.isArray(value)) return Object.freeze(value.map((item) => snapshot(item, ancestors)));
+    if (Object.getPrototypeOf(value) !== Object.prototype && Object.getPrototypeOf(value) !== null) throw new TypeError("volatile config objects must be plain objects or arrays");
+    return Object.freeze(Object.fromEntries(Object.entries(value).map(([key, item]) => [key, snapshot(item, ancestors)])));
+  } finally {
+    ancestors.delete(value);
+  }
+}
+function createVolatile(value) {
+  let current = snapshot(value);
+  return Object.freeze({
+    get: () => current,
+    [write]: (value2) => {
+      current = value2;
+    }
+  });
+}
+function isVolatile(value) {
+  return typeof value === "object" && value !== null && write in value;
+}
+function is(type, value) {
+  if (arguments.length === 1) return (value2) => is(type, value2);
+  return type in globalThis && value instanceof globalThis[type] || Object.prototype.toString.call(value).slice(8, -1) === type;
+}
+function isArrayBufferLike(value) {
+  return is("ArrayBuffer", value) || is("SharedArrayBuffer", value);
+}
+function isArrayBufferSource(value) {
+  return isArrayBufferLike(value) || ArrayBuffer.isView(value);
+}
+var Binary;
+(function(Binary2) {
+  Binary2.is = isArrayBufferLike;
+  Binary2.isSource = isArrayBufferSource;
+  function fromSource(source) {
+    if (ArrayBuffer.isView(source)) return source.buffer.slice(source.byteOffset, source.byteOffset + source.byteLength);
+    else return source;
+  }
+  Binary2.fromSource = fromSource;
+  function toBase64(source) {
+    source = fromSource(source);
+    if (typeof Buffer !== "undefined") return Buffer.from(source).toString("base64");
+    let binary = "";
+    const bytes = new Uint8Array(source);
+    for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+    return btoa(binary);
+  }
+  Binary2.toBase64 = toBase64;
+  function fromBase64(source) {
+    if (typeof Buffer !== "undefined") return fromSource(Buffer.from(source, "base64"));
+    return Uint8Array.from(atob(source), (c) => c.charCodeAt(0));
+  }
+  Binary2.fromBase64 = fromBase64;
+  function toHex(source) {
+    source = fromSource(source);
+    if (typeof Buffer !== "undefined") return Buffer.from(source).toString("hex");
+    return Array.from(new Uint8Array(source), (byte) => byte.toString(16).padStart(2, "0")).join("");
+  }
+  Binary2.toHex = toHex;
+  function fromHex(source) {
+    if (typeof Buffer !== "undefined") return fromSource(Buffer.from(source, "hex"));
+    const hex3 = source.length % 2 === 0 ? source : source.slice(0, source.length - 1);
+    const buffer = [];
+    for (let i = 0; i < hex3.length; i += 2) buffer.push(parseInt(`${hex3[i]}${hex3[i + 1]}`, 16));
+    return Uint8Array.from(buffer).buffer;
+  }
+  Binary2.fromHex = fromHex;
+})(Binary || (Binary = {}));
+var base64ToArrayBuffer = Binary.fromBase64;
+var arrayBufferToBase64 = Binary.toBase64;
+var hexToArrayBuffer = Binary.fromHex;
+var arrayBufferToHex = Binary.toHex;
+function clone2(source, refs = /* @__PURE__ */ new Map()) {
+  if (!source || typeof source !== "object") return source;
+  if (is("Date", source)) return new Date(source.valueOf());
+  if (is("RegExp", source)) return new RegExp(source.source, source.flags);
+  if (isArrayBufferLike(source)) return source.slice(0);
+  if (ArrayBuffer.isView(source)) return source.buffer.slice(source.byteOffset, source.byteOffset + source.byteLength);
+  const cached2 = refs.get(source);
+  if (cached2) return cached2;
+  if (Array.isArray(source)) {
+    const result2 = [];
+    refs.set(source, result2);
+    source.forEach((value, index2) => {
+      result2[index2] = Reflect.apply(clone2, null, [value, refs]);
+    });
+    return result2;
+  }
+  const result = Object.create(Object.getPrototypeOf(source));
+  refs.set(source, result);
+  for (const key of Reflect.ownKeys(source)) {
+    const descriptor = { ...Reflect.getOwnPropertyDescriptor(source, key) };
+    if ("value" in descriptor) descriptor.value = Reflect.apply(clone2, null, [descriptor.value, refs]);
+    Reflect.defineProperty(result, key, descriptor);
+  }
+  return result;
+}
+function deepEqual(a, b, strict) {
+  const ancestors = /* @__PURE__ */ new Set();
+  function compare(a2, b2) {
+    if (a2 === b2) return true;
+    if (isVolatile(a2) || isVolatile(b2)) return isVolatile(a2) && isVolatile(b2);
+    if (!strict && isNullable(a2) && isNullable(b2)) return true;
+    if (typeof a2 !== typeof b2 || typeof a2 !== "object" || !a2 || !b2) return false;
+    if (ancestors.has(a2)) return false;
+    function check2(test, then) {
+      return test(a2) ? test(b2) ? then(a2, b2) : false : test(b2) ? false : void 0;
+    }
+    ancestors.add(a2);
+    try {
+      return check2(Array.isArray, (a3, b3) => {
+        if (a3.length !== b3.length) return false;
+        for (let index2 = 0; index2 < a3.length; index2++) if (!compare(a3[index2], b3[index2])) return false;
+        return true;
+      }) ?? check2(is("Date"), (a3, b3) => a3.valueOf() === b3.valueOf()) ?? check2(is("URL"), (a3, b3) => a3.href === b3.href) ?? check2(is("RegExp"), (a3, b3) => a3.source === b3.source && a3.flags === b3.flags) ?? check2(isArrayBufferLike, (a3, b3) => {
+        if (a3.byteLength !== b3.byteLength) return false;
+        const viewA = new Uint8Array(a3);
+        const viewB = new Uint8Array(b3);
+        for (let i = 0; i < viewA.length; i++) if (viewA[i] !== viewB[i]) return false;
+        return true;
+      }) ?? ((!strict || [a2, b2].every((value) => Object.getPrototypeOf(value) === Object.prototype || Object.getPrototypeOf(value) === null)) && Object.keys({
+        ...a2,
+        ...b2
+      }).every((key) => compare(a2[key], b2[key])));
+    } finally {
+      ancestors.delete(a2);
+    }
+  }
+  return compare(a, b);
+}
+var Time;
+(function(Time2) {
+  Time2.millisecond = 1;
+  Time2.second = 1e3;
+  Time2.minute = Time2.second * 60;
+  Time2.hour = Time2.minute * 60;
+  Time2.day = Time2.hour * 24;
+  Time2.week = Time2.day * 7;
+  let timezoneOffset = (/* @__PURE__ */ new Date()).getTimezoneOffset();
+  function setTimezoneOffset(offset) {
+    timezoneOffset = offset;
+  }
+  Time2.setTimezoneOffset = setTimezoneOffset;
+  function getTimezoneOffset() {
+    return timezoneOffset;
+  }
+  Time2.getTimezoneOffset = getTimezoneOffset;
+  function getDateNumber(date6 = /* @__PURE__ */ new Date(), offset) {
+    if (typeof date6 === "number") date6 = new Date(date6);
+    if (offset === void 0) offset = timezoneOffset;
+    return Math.floor((date6.valueOf() / Time2.minute - offset) / 1440);
+  }
+  Time2.getDateNumber = getDateNumber;
+  function fromDateNumber(value, offset) {
+    const date6 = new Date(value * Time2.day);
+    if (offset === void 0) offset = timezoneOffset;
+    return new Date(+date6 + offset * Time2.minute);
+  }
+  Time2.fromDateNumber = fromDateNumber;
+  const numeric = /\d+(?:\.\d+)?/.source;
+  const timeRegExp = new RegExp(`^${[
+    "w(?:eek(?:s)?)?",
+    "d(?:ay(?:s)?)?",
+    "h(?:our(?:s)?)?",
+    "m(?:in(?:ute)?(?:s)?)?",
+    "s(?:ec(?:ond)?(?:s)?)?"
+  ].map((unit) => `(${numeric}${unit})?`).join("")}$`);
+  function parseTime(source) {
+    const capture = timeRegExp.exec(source);
+    if (!capture) return 0;
+    return (parseFloat(capture[1]) * Time2.week || 0) + (parseFloat(capture[2]) * Time2.day || 0) + (parseFloat(capture[3]) * Time2.hour || 0) + (parseFloat(capture[4]) * Time2.minute || 0) + (parseFloat(capture[5]) * Time2.second || 0);
+  }
+  Time2.parseTime = parseTime;
+  function parseDate(date6) {
+    const parsed = parseTime(date6);
+    if (parsed) date6 = Date.now() + parsed;
+    else if (/^\d{1,2}(:\d{1,2}){1,2}$/.test(date6)) date6 = `${(/* @__PURE__ */ new Date()).toLocaleDateString()}-${date6}`;
+    else if (/^\d{1,2}-\d{1,2}-\d{1,2}(:\d{1,2}){1,2}$/.test(date6)) date6 = `${(/* @__PURE__ */ new Date()).getFullYear()}-${date6}`;
+    return date6 ? new Date(date6) : /* @__PURE__ */ new Date();
+  }
+  Time2.parseDate = parseDate;
+  function format(ms) {
+    const abs = Math.abs(ms);
+    if (abs >= Time2.day - Time2.hour / 2) return Math.round(ms / Time2.day) + "d";
+    else if (abs >= Time2.hour - Time2.minute / 2) return Math.round(ms / Time2.hour) + "h";
+    else if (abs >= Time2.minute - Time2.second / 2) return Math.round(ms / Time2.minute) + "m";
+    else if (abs >= Time2.second) return Math.round(ms / Time2.second) + "s";
+    return ms + "ms";
+  }
+  Time2.format = format;
+  function toDigits(source, length = 2) {
+    return source.toString().padStart(length, "0");
+  }
+  Time2.toDigits = toDigits;
+  function template(template2, time3 = /* @__PURE__ */ new Date()) {
+    return template2.replace("yyyy", time3.getFullYear().toString()).replace("yy", time3.getFullYear().toString().slice(2)).replace("MM", toDigits(time3.getMonth() + 1)).replace("dd", toDigits(time3.getDate())).replace("hh", toDigits(time3.getHours())).replace("mm", toDigits(time3.getMinutes())).replace("ss", toDigits(time3.getSeconds())).replace("SSS", toDigits(time3.getMilliseconds(), 3));
+  }
+  Time2.template = template;
+})(Time || (Time = {}));
+
+// node_modules/@deepseek-ai/schemastery/lib/index.mjs
+var kSchema = Symbol.for("schemastery");
+var kValidationError = Symbol.for("ValidationError");
+globalThis.__schemastery_index__ ??= 0;
+globalThis.__schemastery_refs__ = void 0;
+var ValidationError = class extends TypeError {
+  options;
+  name = "ValidationError";
+  constructor(message, options) {
+    let prefix = "$";
+    for (const segment of options.path || []) if (typeof segment === "string") prefix += "." + segment;
+    else if (typeof segment === "number") prefix += "[" + segment + "]";
+    else if (typeof segment === "symbol") prefix += `[Symbol(${segment.toString()})]`;
+    if (prefix.startsWith(".")) prefix = prefix.slice(1);
+    super((prefix === "$" ? "" : `${prefix} `) + message);
+    this.options = options;
+  }
+  static is(error62) {
+    return !!error62?.[kValidationError];
+  }
+};
+Object.defineProperty(ValidationError.prototype, kValidationError, { value: true });
+var Schema = function(options) {
+  const schema = function(data, options2 = {}) {
+    return Schema.resolve(data, schema, options2)[0];
+  };
+  if (options.refs) {
+    const refs = mapValues(options.refs, (options2) => new Schema(options2));
+    const getRef = (uid2) => refs[uid2];
+    for (const key in refs) {
+      const options2 = refs[key];
+      options2.sKey = getRef(options2.sKey);
+      options2.inner = getRef(options2.inner);
+      options2.list = options2.list && options2.list.map(getRef);
+      options2.dict = options2.dict && mapValues(options2.dict, getRef);
+    }
+    return refs[options.uid];
+  }
+  Object.assign(schema, options);
+  if (typeof schema.callback === "string") try {
+    schema.callback = new Function("return " + schema.callback)();
+  } catch {
+  }
+  Object.defineProperty(schema, "uid", { value: globalThis.__schemastery_index__++ });
+  Object.setPrototypeOf(schema, Schema.prototype);
+  schema.meta ||= {};
+  schema.toString = schema.toString.bind(schema);
+  return schema;
+};
+Schema.prototype = Object.create(Function.prototype);
+Schema.prototype[kSchema] = true;
+Object.defineProperty(Schema.prototype, "~standard", { get() {
+  return {
+    version: 1,
+    vendor: "schemastery",
+    validate: (value) => {
+      try {
+        return { value: Schema.resolve(value, this, {})[0] };
+      } catch (error62) {
+        if (ValidationError.is(error62)) return { issues: [{
+          message: error62.message,
+          path: error62.options.path
+        }] };
+        throw error62;
+      }
+    }
+  };
+} });
+Schema.ValidationError = ValidationError;
+Schema.prototype.toJSON = function toJSON() {
+  if (globalThis.__schemastery_refs__) {
+    globalThis.__schemastery_refs__[this.uid] ??= JSON.parse(JSON.stringify({ ...this }));
+    return this.uid;
+  }
+  globalThis.__schemastery_refs__ = { [this.uid]: { ...this } };
+  globalThis.__schemastery_refs__[this.uid] = JSON.parse(JSON.stringify({ ...this }));
+  const result = {
+    uid: this.uid,
+    refs: globalThis.__schemastery_refs__
+  };
+  globalThis.__schemastery_refs__ = void 0;
+  return result;
+};
+Schema.prototype.set = function set2(key, value) {
+  this.dict[key] = value;
+  return this;
+};
+Schema.prototype.push = function push(value) {
+  this.list.push(value);
+  return this;
+};
+function mergeDesc(original, messages) {
+  const result = typeof original === "string" ? { "": original } : { ...original };
+  for (const locale in messages) {
+    const value = messages[locale];
+    if (value?.$description || value?.$desc) result[locale] = value.$description || value.$desc;
+    else if (typeof value === "string") result[locale] = value;
+  }
+  return result;
+}
+function getInner(value) {
+  return value?.$value ?? value?.$inner;
+}
+function extractKeys(data) {
+  return filterKeys(data ?? {}, (key) => !key.startsWith("$"));
+}
+Schema.prototype.i18n = function i18n(messages) {
+  const schema = Schema(this);
+  const desc = mergeDesc(schema.meta.description, messages);
+  if (Object.keys(desc).length) schema.meta.description = desc;
+  if (schema.dict) schema.dict = mapValues(schema.dict, (inner, key) => {
+    return inner.i18n(mapValues(messages, (data) => getInner(data)?.[key] ?? data?.[key]));
+  });
+  if (schema.list) schema.list = schema.list.map((inner, index2) => {
+    return inner.i18n(mapValues(messages, (data = {}) => {
+      if (Array.isArray(getInner(data))) return getInner(data)[index2];
+      if (Array.isArray(data)) return data[index2];
+      return extractKeys(data);
+    }));
+  });
+  if (schema.inner) schema.inner = schema.inner.i18n(mapValues(messages, (data) => {
+    if (getInner(data)) return getInner(data);
+    return extractKeys(data);
+  }));
+  if (schema.sKey) schema.sKey = schema.sKey.i18n(mapValues(messages, (data) => data?.$key));
+  return schema;
+};
+Schema.prototype.extra = function extra(key, value) {
+  const schema = Schema(this);
+  schema.meta = {
+    ...schema.meta,
+    [key]: value
+  };
+  return schema;
+};
+for (const key of [
+  "required",
+  "disabled",
+  "collapse",
+  "hidden",
+  "loose"
+]) Object.assign(Schema.prototype, { [key](value = true) {
+  const schema = Schema(this);
+  schema.meta = {
+    ...schema.meta,
+    [key]: value
+  };
+  return schema;
+} });
+Schema.prototype.deprecated = function deprecated() {
+  const schema = Schema(this);
+  schema.meta.badges ||= [];
+  schema.meta.badges.push({
+    text: "deprecated",
+    type: "danger"
+  });
+  return schema;
+};
+Schema.prototype.experimental = function experimental() {
+  const schema = Schema(this);
+  schema.meta.badges ||= [];
+  schema.meta.badges.push({
+    text: "experimental",
+    type: "warning"
+  });
+  return schema;
+};
+Schema.prototype.pattern = function pattern(regexp) {
+  const schema = Schema(this);
+  const pattern2 = pick2(regexp, ["source", "flags"]);
+  schema.meta = {
+    ...schema.meta,
+    pattern: pattern2
+  };
+  return schema;
+};
+Schema.prototype.simplify = function simplify(value) {
+  if (isVolatile(value)) value = value.get();
+  if (deepEqual(value, this.meta.default, this.type === "dict")) return null;
+  if (isNullable(value)) return value;
+  if (this.type === "object" || this.type === "dict") {
+    const result = {};
+    for (const key in value) {
+      const item = (this.type === "object" ? this.dict[key] : this.inner)?.simplify(value[key]);
+      if (this.type === "dict" || !isNullable(item)) result[key] = item;
+    }
+    if (deepEqual(result, this.meta.default, this.type === "dict")) return null;
+    return result;
+  } else if (this.type === "array" || this.type === "tuple") {
+    const result = [];
+    value.forEach((value2, index2) => {
+      const schema = this.type === "array" ? this.inner : this.list[index2];
+      const item = schema ? schema.simplify(value2) : value2;
+      result.push(item);
+    });
+    return result;
+  } else if (this.type === "intersect") {
+    const result = {};
+    for (const item of this.list) Object.assign(result, item.simplify(value));
+    return result;
+  } else if (this.type === "union") for (const schema of this.list) try {
+    Schema.resolve(value, schema, {});
+    return schema.simplify(value);
+  } catch {
+  }
+  return value;
+};
+Schema.prototype.toString = function toString(inline) {
+  return formatters[this.type]?.(this, inline) ?? `Schema<${this.type}>`;
+};
+Schema.prototype.role = function role(role, extra2) {
+  const schema = Schema(this);
+  schema.meta = {
+    ...schema.meta,
+    role,
+    extra: extra2
+  };
+  return schema;
+};
+for (const key of [
+  "default",
+  "link",
+  "comment",
+  "description",
+  "max",
+  "min",
+  "step"
+]) Object.assign(Schema.prototype, { [key](value) {
+  const schema = Schema(this);
+  schema.meta = {
+    ...schema.meta,
+    [key]: value
+  };
+  return schema;
+} });
+Schema.prototype.volatile = function volatile() {
+  if (this.meta.volatile) throw new TypeError("volatile schema is already wrapped");
+  return this.extra("volatile", true);
+};
+var resolvers = {};
+var checkedVolatile = Symbol("checked-volatile-schema");
+function validateVolatileSchema(schema, path = [], blocked = false, seen = /* @__PURE__ */ new Map()) {
+  const states = seen.get(schema) ?? /* @__PURE__ */ new Set();
+  if (states.has(blocked)) return;
+  states.add(blocked);
+  seen.set(schema, states);
+  if (schema.meta?.volatile && blocked) throw new ValidationError("volatile fields require a fixed object path without an enclosing volatile field", { path });
+  const nested = blocked || !!schema.meta?.volatile;
+  if (schema.dict) for (const [key, child] of Object.entries(schema.dict)) validateVolatileSchema(child, [...path, key], nested, seen);
+  if (schema.sKey) validateVolatileSchema(schema.sKey, [...path, "<key>"], true, seen);
+  if (schema.inner && (schema.type !== "lazy" || schema.inner[kSchema])) validateVolatileSchema(schema.inner, [...path, "*"], true, seen);
+  if (schema.list) for (let index2 = 0; index2 < schema.list.length; index2++) validateVolatileSchema(schema.list[index2], [...path, String(index2)], true, seen);
+}
+Schema.extend = function extend2(type, resolve2) {
+  resolvers[type] = resolve2;
+};
+Schema.resolve = function resolve(data, schema, options = {}, strict = false) {
+  if (!schema) return [data];
+  if (!options[checkedVolatile]) {
+    validateVolatileSchema(schema, options.path);
+    options = {
+      ...options,
+      [checkedVolatile]: true
+    };
+  }
+  if (schema.meta?.volatile) {
+    const inner = Schema(schema);
+    inner.meta = {
+      ...schema.meta,
+      volatile: false
+    };
+    const [value, adapted] = Schema.resolve(data, inner, options, strict);
+    try {
+      return [createVolatile(value), adapted];
+    } catch (error62) {
+      throw new ValidationError(error62 instanceof Error ? error62.message : String(error62), options);
+    }
+  }
+  if (options.ignore?.(data, schema)) return [data];
+  if (isNullable(data) && schema.type !== "lazy") {
+    if (schema.meta.required) throw new ValidationError(`missing required value`, options);
+    let current = schema;
+    let fallback = schema.meta.default;
+    while (current?.type === "intersect" && isNullable(fallback)) {
+      current = current.list[0];
+      fallback = current?.meta.default;
+    }
+    if (isNullable(fallback)) return [data];
+    data = clone2(fallback);
+  }
+  const callback = resolvers[schema.type];
+  if (!callback) throw new ValidationError(`unsupported type "${schema.type}"`, options);
+  try {
+    return callback(data, schema, options, strict);
+  } catch (error62) {
+    if (!schema.meta.loose) throw error62;
+    return [schema.meta.default];
+  }
+};
+Schema.from = function from(source) {
+  if (isNullable(source)) return Schema.any();
+  else if ([
+    "string",
+    "number",
+    "boolean"
+  ].includes(typeof source)) return Schema.const(source).required();
+  else if (source[kSchema]) return source;
+  else if (typeof source === "function") switch (source) {
+    case String:
+      return Schema.string().required();
+    case Number:
+      return Schema.number().required();
+    case Boolean:
+      return Schema.boolean().required();
+    case Function:
+      return Schema.function().required();
+    default:
+      return Schema.is(source).required();
+  }
+  else throw new TypeError(`cannot infer schema from ${source}`);
+};
+Schema.lazy = function lazy2(builder) {
+  const toJSON2 = () => {
+    if (!schema.inner[kSchema]) {
+      schema.inner = schema.builder();
+      schema.inner.meta = {
+        ...schema.meta,
+        ...schema.inner.meta
+      };
+    }
+    return schema.inner.toJSON();
+  };
+  const schema = new Schema({
+    type: "lazy",
+    builder,
+    inner: { toJSON: toJSON2 }
+  });
+  return schema;
+};
+Schema.natural = function natural() {
+  return Schema.number().step(1).min(0);
+};
+Schema.percent = function percent() {
+  return Schema.number().step(0.01).min(0).max(1).role("slider");
+};
+Schema.date = function date5() {
+  return Schema.union([Schema.is(Date), Schema.transform(Schema.string().role("datetime"), (value, options) => {
+    const date6 = new Date(value);
+    if (isNaN(+date6)) throw new ValidationError(`invalid date "${value}"`, options);
+    return date6;
+  }, true)]);
+};
+Schema.regExp = function regExp(flag = "") {
+  return Schema.union([Schema.is(RegExp), Schema.transform(Schema.string().role("regexp", { flag }), (value, options) => {
+    try {
+      return new RegExp(value, flag);
+    } catch (e) {
+      throw new ValidationError(e.message, options);
+    }
+  }, true)]);
+};
+Schema.arrayBuffer = function arrayBuffer(encoding) {
+  return Schema.union([
+    Schema.is(ArrayBuffer),
+    Schema.is(SharedArrayBuffer),
+    Schema.transform(Schema.any(), (value, options) => {
+      if (Binary.isSource(value)) return Binary.fromSource(value);
+      throw new ValidationError(`expected ArrayBufferSource but got ${value}`, options);
+    }, true),
+    ...encoding ? [Schema.transform(Schema.string(), (value, options) => {
+      try {
+        return encoding === "base64" ? Binary.fromBase64(value) : Binary.fromHex(value);
+      } catch (e) {
+        throw new ValidationError(e.message, options);
+      }
+    }, true)] : []
+  ]);
+};
+Schema.extend("lazy", (data, schema, options, strict) => {
+  if (!schema.inner[kSchema]) {
+    schema.inner = schema.builder();
+    schema.inner.meta = {
+      ...schema.meta,
+      ...schema.inner.meta
+    };
+    validateVolatileSchema(schema.inner, options.path, true);
+  }
+  return Schema.resolve(data, schema.inner, options, strict);
+});
+Schema.extend("any", (data) => {
+  return [data];
+});
+Schema.extend("never", (data, _, options) => {
+  throw new ValidationError(`expected nullable but got ${data}`, options);
+});
+Schema.extend("const", (data, { value }, options) => {
+  if (deepEqual(data, value)) return [value];
+  throw new ValidationError(`expected ${value} but got ${data}`, options);
+});
+function checkWithinRange(data, meta3, description, options, skipMin = false) {
+  const { max = Infinity, min = -Infinity } = meta3;
+  if (data > max) throw new ValidationError(`expected ${description} <= ${max} but got ${data}`, options);
+  if (data < min && !skipMin) throw new ValidationError(`expected ${description} >= ${min} but got ${data}`, options);
+}
+Schema.extend("string", (data, { meta: meta3 }, options) => {
+  if (typeof data !== "string") throw new ValidationError(`expected string but got ${data}`, options);
+  if (meta3.pattern) {
+    const regexp = new RegExp(meta3.pattern.source, meta3.pattern.flags);
+    if (!regexp.test(data)) throw new ValidationError(`expect string to match regexp ${regexp}`, options);
+  }
+  checkWithinRange(data.length, meta3, "string length", options);
+  return [data];
+});
+function decimalShift(data, digits) {
+  const str = data.toString();
+  if (str.includes("e")) return data * Math.pow(10, digits);
+  const index2 = str.indexOf(".");
+  if (index2 === -1) return data * Math.pow(10, digits);
+  const frac = str.slice(index2 + 1);
+  const integer2 = str.slice(0, index2);
+  if (frac.length <= digits) return +(integer2 + frac.padEnd(digits, "0"));
+  return +(integer2 + frac.slice(0, digits) + "." + frac.slice(digits));
+}
+function isMultipleOf(data, min, step) {
+  step = Math.abs(step);
+  if (!/^\d+\.\d+$/.test(step.toString())) return (data - min) % step === 0;
+  const index2 = step.toString().indexOf(".");
+  const digits = step.toString().slice(index2 + 1).length;
+  return Math.abs(decimalShift(data, digits) - decimalShift(min, digits)) % decimalShift(step, digits) === 0;
+}
+Schema.extend("number", (data, { meta: meta3 }, options) => {
+  if (typeof data !== "number") throw new ValidationError(`expected number but got ${data}`, options);
+  checkWithinRange(data, meta3, "number", options);
+  const { step } = meta3;
+  if (step && !isMultipleOf(data, meta3.min ?? 0, step)) throw new ValidationError(`expected number multiple of ${step} but got ${data}`, options);
+  return [data];
+});
+Schema.extend("boolean", (data, _, options) => {
+  if (typeof data === "boolean") return [data];
+  throw new ValidationError(`expected boolean but got ${data}`, options);
+});
+Schema.extend("bitset", (data, { bits, meta: meta3 }, options) => {
+  let value = 0, keys = [];
+  if (typeof data === "number") {
+    value = data;
+    for (const key in bits) if (data & bits[key]) keys.push(key);
+  } else if (Array.isArray(data)) {
+    keys = data;
+    for (const key of keys) {
+      if (typeof key !== "string") throw new ValidationError(`expected string but got ${key}`, options);
+      if (key in bits) value |= bits[key];
+    }
+  } else throw new ValidationError(`expected number or array but got ${data}`, options);
+  if (value === meta3.default) return [value];
+  return [value, keys];
+});
+Schema.extend("function", (data, _, options) => {
+  if (typeof data === "function") return [data];
+  throw new ValidationError(`expected function but got ${data}`, options);
+});
+Schema.extend("is", (data, { constructor }, options) => {
+  if (typeof constructor === "function") {
+    if (data instanceof constructor) return [data];
+    throw new ValidationError(`expected ${constructor.name} but got ${data}`, options);
+  } else {
+    if (isNullable(data)) throw new ValidationError(`expected ${constructor} but got ${data}`, options);
+    let prototype = Object.getPrototypeOf(data);
+    while (prototype) {
+      if (prototype.constructor?.name === constructor) return [data];
+      prototype = Object.getPrototypeOf(prototype);
+    }
+    throw new ValidationError(`expected ${constructor} but got ${data}`, options);
+  }
+});
+function property(data, key, schema, options) {
+  try {
+    const [value, adapted] = Schema.resolve(data[key], schema, {
+      ...options,
+      path: [...options.path || [], key]
+    });
+    if (adapted !== void 0) data[key] = adapted;
+    return value;
+  } catch (e) {
+    if (!options?.autofix) throw e;
+    delete data[key];
+    return schema.meta.volatile ? createVolatile(schema.meta.default) : schema.meta.default;
+  }
+}
+Schema.extend("array", (data, { inner, meta: meta3 }, options) => {
+  if (!Array.isArray(data)) throw new ValidationError(`expected array but got ${data}`, options);
+  checkWithinRange(data.length, meta3, "array length", options, !isNullable(inner.meta.default));
+  return [data.map((_, index2) => property(data, index2, inner, options))];
+});
+Schema.extend("dict", (data, { inner, sKey }, options, strict) => {
+  if (!isPlainObject2(data)) throw new ValidationError(`expected object but got ${data}`, options);
+  const result = {};
+  for (const key in data) {
+    let rKey;
+    try {
+      rKey = Schema.resolve(key, sKey, options)[0];
+    } catch (error62) {
+      if (strict) continue;
+      throw error62;
+    }
+    result[rKey] = property(data, key, inner, options);
+    data[rKey] = data[key];
+    if (key !== rKey) delete data[key];
+  }
+  return [result];
+});
+Schema.extend("tuple", (data, { list }, options, strict) => {
+  if (!Array.isArray(data)) throw new ValidationError(`expected array but got ${data}`, options);
+  const result = list.map((inner, index2) => property(data, index2, inner, options));
+  if (strict) return [result];
+  result.push(...data.slice(list.length));
+  return [result];
+});
+function merge2(result, data) {
+  for (const key in data) {
+    if (key in result) continue;
+    result[key] = data[key];
+  }
+}
+Schema.extend("object", (data, { dict }, options, strict) => {
+  if (!isPlainObject2(data)) throw new ValidationError(`expected object but got ${data}`, options);
+  const result = {};
+  for (const key in dict) {
+    const value = property(data, key, dict[key], options);
+    if (!isNullable(value) || key in data) result[key] = value;
+  }
+  if (!strict) merge2(result, data);
+  return [result];
+});
+Schema.extend("union", (data, { list, toString: toString2 }, options, strict) => {
+  const messages = [];
+  for (const inner of list) try {
+    return Schema.resolve(data, inner, options, strict);
+  } catch (error62) {
+    messages.push(error62);
+  }
+  throw new ValidationError(`expected ${toString2()} but got ${JSON.stringify(data)}`, options);
+});
+Schema.extend("intersect", (data, { list, toString: toString2 }, options, strict) => {
+  if (!list.length) return [data];
+  let result;
+  for (const inner of list) {
+    const value = Schema.resolve(data, inner, options, true)[0];
+    if (isNullable(value)) continue;
+    if (isNullable(result)) result = value;
+    else if (typeof result !== typeof value) throw new ValidationError(`expected ${toString2()} but got ${JSON.stringify(data)}`, options);
+    else if (typeof value === "object") merge2(result ??= {}, value);
+    else if (result !== value) throw new ValidationError(`expected ${toString2()} but got ${JSON.stringify(data)}`, options);
+  }
+  if (!strict && isPlainObject2(data)) merge2(result, data);
+  return [result];
+});
+Schema.extend("transform", (data, { inner, callback, preserve }, options) => {
+  const [result, adapted = data] = Schema.resolve(data, inner, options, true);
+  if (preserve) return [callback(result)];
+  else return [callback(result), callback(adapted)];
+});
+var formatters = {};
+function defineMethod(name2, keys, format) {
+  formatters[name2] = format;
+  Object.assign(Schema, { [name2](...args) {
+    const schema = new Schema({ type: name2 });
+    keys.forEach((key, index2) => {
+      switch (key) {
+        case "sKey":
+          schema.sKey = args[index2] ?? Schema.string();
+          break;
+        case "inner":
+          schema.inner = Schema.from(args[index2]);
+          break;
+        case "list":
+          schema.list = args[index2].map(Schema.from);
+          break;
+        case "dict":
+          schema.dict = mapValues(args[index2], Schema.from);
+          break;
+        case "bits":
+          schema.bits = {};
+          for (const key2 in args[index2]) {
+            if (typeof args[index2][key2] !== "number") continue;
+            schema.bits[key2] = args[index2][key2];
+          }
+          break;
+        case "callback": {
+          const callback = schema.callback = args[index2];
+          callback["toJSON"] ||= () => callback.toString();
+          break;
+        }
+        case "constructor": {
+          const constructor = schema.constructor = args[index2];
+          if (typeof constructor === "function") constructor["toJSON"] ||= () => constructor["name"];
+          break;
+        }
+        default:
+          schema[key] = args[index2];
+      }
+    });
+    if (name2 === "object" || name2 === "dict") schema.meta.default = {};
+    else if (name2 === "array" || name2 === "tuple") schema.meta.default = [];
+    else if (name2 === "bitset") schema.meta.default = 0;
+    return schema;
+  } });
+}
+defineMethod("is", ["constructor"], ({ constructor }) => {
+  if (typeof constructor === "function") return constructor.name;
+  else return constructor;
+});
+defineMethod("any", [], () => "any");
+defineMethod("never", [], () => "never");
+defineMethod("const", ["value"], ({ value }) => typeof value === "string" ? JSON.stringify(value) : value);
+defineMethod("string", [], () => "string");
+defineMethod("number", [], () => "number");
+defineMethod("boolean", [], () => "boolean");
+defineMethod("bitset", ["bits"], () => "bitset");
+defineMethod("function", [], () => "function");
+defineMethod("array", ["inner"], ({ inner }) => `${inner.toString(true)}[]`);
+defineMethod("dict", ["inner", "sKey"], ({ inner, sKey }) => `{ [key: ${sKey.toString()}]: ${inner.toString()} }`);
+defineMethod("tuple", ["list"], ({ list }) => `[${list.map((inner) => inner.toString()).join(", ")}]`);
+defineMethod("object", ["dict"], ({ dict }) => {
+  if (Object.keys(dict).length === 0) return "{}";
+  return `{ ${Object.entries(dict).map(([key, inner]) => {
+    return `${key}${inner.meta.required ? "" : "?"}: ${inner.toString()}`;
+  }).join(", ")} }`;
+});
+defineMethod("union", ["list"], ({ list }, inline) => {
+  const result = list.map(({ toString: format }) => format()).join(" | ");
+  return inline ? `(${result})` : result;
+});
+defineMethod("intersect", ["list"], ({ list }) => {
+  return `${list.map((inner) => inner.toString(true)).join(" & ")}`;
+});
+defineMethod("transform", [
+  "inner",
+  "callback",
+  "preserve"
+], ({ inner }, isInner) => inner.toString(isInner));
+
+// site-url.mjs
+function normalizeSiteUrl(value) {
+  const input2 = String(value ?? "").trim();
+  if (!input2) return "";
+  let url2;
+  try {
+    url2 = new URL(input2);
+  } catch {
+    throw new Error("\u8BF7\u8F93\u5165\u5B8C\u6574\u7684\u6E38\u620F\u7AD9\u7F51\u5740\uFF0C\u4F8B\u5982 https://ark.harco.top");
+  }
+  if (url2.username || url2.password || url2.search || url2.hash || !["/", "/ws", "/ws/"].includes(url2.pathname)) {
+    throw new Error("\u6E38\u620F\u7AD9\u5730\u5740\u53EA\u652F\u6301\u7AD9\u70B9\u6839\u8DEF\u5F84\u6216 /ws\uFF0C\u4E0D\u80FD\u5305\u542B\u8D26\u53F7\u3001\u67E5\u8BE2\u53C2\u6570\u6216\u7247\u6BB5");
+  }
+  const protocol = { https: "wss:", http: "ws:", wss: "wss:", ws: "ws:" }[url2.protocol.slice(0, -1)];
+  if (!protocol) throw new Error("\u6E38\u620F\u7AD9\u5730\u5740\u9700\u8981 https:// \u6216 wss://");
+  if (protocol === "ws:" && !["localhost", "127.0.0.1", "[::1]"].includes(url2.hostname)) {
+    throw new Error("\u8FDC\u7A0B\u6E38\u620F\u7AD9\u5FC5\u987B\u4F7F\u7528 HTTPS / WSS\uFF1BHTTP / WS \u4EC5\u9650\u672C\u673A\u56DE\u73AF\u5730\u5740");
+  }
+  return protocol + "//" + url2.host + "/ws";
+}
+
 // index.mjs
 var name = "ark-play";
 var inject = ["tools"];
+var Config = Schema.object({
+  url: Schema.string().default("").description("\u6E38\u620F\u7AD9\u94FE\u63A5\uFF08HTTPS / WSS\uFF09").comment("\u4F8B\u5982 https://ark.harco.top\uFF0C\u81EA\u52A8\u8FDE\u63A5 /ws\u3002\u4FDD\u5B58\u540E\u7528\u4E8E\u4E0B\u4E00\u76D8\uFF0C\u5F53\u524D\u5BF9\u5C40\u7EE7\u7EED\u4F7F\u7528\u539F\u7AD9\u70B9\u3002\u7559\u7A7A\u7EE7\u627F\u73AF\u5883\u53D8\u91CF\u6216\u5BA2\u6237\u7AEF\u914D\u7F6E\u3002").volatile(),
+  // Existing composition/file-based setup remains available to headless users.
+  configFile: Schema.string(),
+  name: Schema.string(),
+  headersFile: Schema.string(),
+  tokenFile: Schema.string(),
+  sessionFile: Schema.string(),
+  token: Schema.string().role("secret")
+});
 function harnessSchema(value) {
   if (Array.isArray(value)) return value.map(harnessSchema);
   if (!value || typeof value !== "object") return value;
@@ -24172,10 +25093,29 @@ function harnessSchema(value) {
 }
 function apply(ctx, config2 = {}) {
   const runtimes = /* @__PURE__ */ new Map();
-  const template = createTools({ ...config2, client: "dsh-plugin" });
-  function runtime(exec) {
+  function options() {
+    const { url: url2, ...rest } = config2;
+    const endpoint = normalizeSiteUrl(url2 && typeof url2.get === "function" ? url2.get() : url2);
+    return {
+      ...Object.fromEntries(Object.entries(rest).filter(([, value]) => value !== void 0)),
+      ...endpoint ? { url: endpoint } : {},
+      client: "dsh-plugin"
+    };
+  }
+  const template = createTools(options());
+  async function runtime(exec, toolName) {
     if (!exec.agent) throw new Error("Ark Play requires a DSH execution agent identity");
-    if (!runtimes.has(exec.agent)) runtimes.set(exec.agent, createTools({ ...config2, client: "dsh-plugin" }));
+    const previous = runtimes.get(exec.agent);
+    const next = options();
+    if (previous && toolName === "ark_start" && !previous.client.inCall && (previous.client.result || previous.settingUrl !== (next.url || "") && !previous.client.room?.inMatch && !previous.client.uncertain && !previous.client.replaced && !previous.client.sessionLost)) {
+      await previous.close();
+      runtimes.delete(exec.agent);
+    }
+    if (!runtimes.has(exec.agent)) {
+      const created = createTools(next);
+      created.settingUrl = next.url || "";
+      runtimes.set(exec.agent, created);
+    }
     return runtimes.get(exec.agent);
   }
   ctx.effect(() => () => {
@@ -24197,14 +25137,21 @@ function apply(ctx, config2 = {}) {
       },
       async execute(args, exec) {
         exec.signal?.throwIfAborted();
-        const r = runtime(exec), selected = r.tools.find((t) => t.name === tool.name);
-        return await selected.execute(tool.schema.parse(args), exec.signal);
+        const r = await runtime(exec, tool.name), selected = r.tools.find((t) => t.name === tool.name);
+        const reply = await selected.execute(tool.schema.parse(args), exec.signal);
+        if (tool.name === "ark_finish") {
+          await r.close();
+          if (runtimes.get(exec.agent) === r) runtimes.delete(exec.agent);
+        }
+        return reply;
       }
     });
   }
 }
 export {
+  Config,
   apply,
   inject,
-  name
+  name,
+  normalizeSiteUrl
 };

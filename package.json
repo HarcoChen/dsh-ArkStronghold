@@ -1,13 +1,20 @@
 {
   "name": "dsh-ark-stronghold",
-  "version": "0.2.0-alpha.1",
+  "version": "0.2.0-alpha.8",
   "type": "module",
   "main": "./dist/index.mjs",
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
     },
-    "manifestVersion": 1
+    "manifestVersion": 1,
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-sidebar",
+        "@deepseek-ai/dsh-client-ui-settings"
+      ]
+    }
   },
   "engines": {
     "node": ">=22",
@@ -31,8 +38,9 @@
     }
   },
   "devDependencies": {
-    "esbuild": "0.25.12",
-    "@harco/ark-play-core": "https://codeload.github.com/HarcoChen/ArkStrongholdCodex/tar.gz/d2e51eacb946e831a6f928a33967151f51dac603"
+    "@deepseek-ai/schemastery": "3.18.5",
+    "@harco/ark-play-core": "https://codeload.github.com/HarcoChen/ArkStrongholdCodex/tar.gz/d2e51eacb946e831a6f928a33967151f51dac603",
+    "esbuild": "0.25.12"
   },
   "repository": {
     "type": "git",
@@ -52,7 +60,10 @@
     "corresponding-source",
     "LICENSE",
     "README.md",
-    "PUBLISH.md"
+    "PUBLISH.md",
+    "client.mjs",
+    "site-url.mjs",
+    "site-loader.mjs"
   ],
   "bin": {
     "ark-play-configure": "./configure.mjs"
@@ -60,7 +71,8 @@
   "exports": {
     ".": "./dist/index.mjs",
     "./package.json": "./package.json",
-    "./cordis.patch.yml": "./cordis.patch.yml"
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./client": "./dist/client.js"
   },
   "keywords": [
     "dsh",

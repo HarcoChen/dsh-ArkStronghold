@@ -10,7 +10,7 @@ const pkg=JSON.parse(await readFile(join(root,'package.json'),'utf8'));
 if(pkg.name!=='dsh-ark-stronghold'||pkg.private||pkg.publishConfig?.access!=='public')throw new Error('Unexpected npm identity/access');
 if(pkg.dsh?.manifestVersion!==1||pkg.dsh.bundle?.patch!=='./cordis.patch.yml')throw new Error('Invalid DSH bundle metadata');
 if(!/name: ['"]?dsh-ark-stronghold['"]?\s*$/.test(await readFile(join(root,'cordis.patch.yml'),'utf8')))throw new Error('Bundle patch must reference the npm name');
-const required=['dist/index.mjs','dist/site-worker.mjs','dist/site-loader.mjs','dist/THIRD_PARTY_LICENSES.txt',
+const required=['dist/client.js','client.mjs','site-url.mjs','site-loader.mjs','dist/index.mjs','dist/site-worker.mjs','dist/site-loader.mjs','dist/THIRD_PARTY_LICENSES.txt',
   'cordis.patch.yml','configure.mjs','LICENSE','README.md','corresponding-source/ark-play-core/src/site-worker.mjs'];
 const tarballOnly=Boolean(process.argv[2]&&process.argv[2]!=='--pack');
 if(!tarballOnly) {
