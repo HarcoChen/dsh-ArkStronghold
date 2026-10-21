@@ -1,0 +1,119 @@
+name: Release and npm
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish to npm (run on a matching v-version tag)
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      tarball: ${{ steps.metadata.outputs.tarball }}
+      dist_tag: ${{ steps.metadata.outputs.dist_tag }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - id: metadata
+        run: npm run check:package
+        env:
+          RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+          REQUIRE_RELEASE_TAG: ${{ github.event_name == 'release' || inputs.publish }}
+      - run: npm run pack:release
+      - run: npm run package -- results/releases
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-packages
+          path: |
+            results/npm/*
+            results/releases/*
+          if-no-files-found: error
+          retention-days: 14
+  verify:
+    needs: package
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-packages
+          path: artifacts
+      - name: Verify downloaded package checksums
+        working-directory: artifacts/npm
+        run: sha256sum --check *.sha256
+      - run: node tools/check-package.mjs "artifacts/npm/$TARBALL"
+        env:
+          TARBALL: ${{ needs.package.outputs.tarball }}
+          RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+  assets:
+    if: github.event_name == 'release'
+    needs: [package, verify]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-packages
+          path: artifacts
+      - run: gh release upload "$RELEASE_TAG" artifacts/npm/* artifacts/releases/* --repo "$GITHUB_REPOSITORY"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+  npm:
+    if: vars.NPM_PUBLISH_ENABLED == 'true' && (github.event_name == 'release' || inputs.publish)
+    needs: [package, verify]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          registry-url: https://registry.npmjs.org/
+          package-manager-cache: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-packages
+          path: artifacts
+      - name: Verify the exact audited npm artifact
+        working-directory: artifacts/npm
+        run: sha256sum --check *.sha256
+      - run: node tools/check-package.mjs "artifacts/npm/$TARBALL"
+        env:
+          TARBALL: ${{ needs.package.outputs.tarball }}
+          RELEASE_TAG: ${{ github.ref_name }}
+      - name: Publish with npm trusted publishing (OIDC)
+        run: npm publish "artifacts/npm/$TARBALL" --ignore-scripts --access public --tag "$DIST_TAG"
+        env:
+          TARBALL: ${{ needs.package.outputs.tarball }}
+          DIST_TAG: ${{ needs.package.outputs.dist_tag }}

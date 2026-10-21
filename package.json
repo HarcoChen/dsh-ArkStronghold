@@ -1,24 +1,29 @@
 {
-  "name": "@harco/dsh-ark-play",
+  "name": "dsh-ark-stronghold",
   "version": "0.2.0-alpha.1",
-  "private": true,
   "type": "module",
   "main": "./dist/index.mjs",
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
-    }
+    },
+    "manifestVersion": 1
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=22",
+    "dsh": "^0.2.0-rc.2"
   },
   "license": "GPL-3.0-or-later",
   "description": "DSH Cordis plugin using the shared Ark Play WSS gameplay core",
   "scripts": {
-    "build": "node tools/build.mjs"
+    "build": "node tools/build.mjs",
+    "check:package": "node tools/check-package.mjs",
+    "pack:release": "node tools/check-package.mjs --pack",
+    "package": "node tools/package.mjs",
+    "prepack": "npm run build && npm run check:package"
   },
   "peerDependencies": {
-    "@deepseek-ai/cordis": "*"
+    "@deepseek-ai/cordis": "^4.0.5"
   },
   "peerDependenciesMeta": {
     "@deepseek-ai/cordis": {
@@ -27,11 +32,46 @@
   },
   "devDependencies": {
     "esbuild": "0.25.12",
-    "@harco/ark-play-core": "git+https://github.com/HarcoChen/ArkStrongholdCodex.git#e604c146ab428c3f2faf220786b371d9d6647043"
+    "@harco/ark-play-core": "https://codeload.github.com/HarcoChen/ArkStrongholdCodex/tar.gz/d2e51eacb946e831a6f928a33967151f51dac603"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HarcoChen/dsh-ArkStronghold.git"
   },
-  "homepage": "https://github.com/HarcoChen/dsh-ArkStronghold"
+  "homepage": "https://github.com/HarcoChen/dsh-ArkStronghold",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "dist",
+    "cordis.patch.yml",
+    "configure.mjs",
+    "index.mjs",
+    "tools",
+    "corresponding-source",
+    "LICENSE",
+    "README.md",
+    "PUBLISH.md"
+  ],
+  "bin": {
+    "ark-play-configure": "./configure.mjs"
+  },
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./package.json": "./package.json",
+    "./cordis.patch.yml": "./cordis.patch.yml"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "arknights",
+    "stronghold-protocol",
+    "agent-tools"
+  ],
+  "author": "HarcoChen",
+  "bugs": {
+    "url": "https://github.com/HarcoChen/dsh-ArkStronghold/issues"
+  }
 }
