@@ -38,9 +38,9 @@
     }
   },
   "devDependencies": {
+    "@arkstrongholdrl/ark-play-core": "https://codeload.github.com/ArkStrongholdRL/ark-play-core/tar.gz/9f78fe076661fe7fa5f9625919d5c2a681d9ea4d",
     "@deepseek-ai/schemastery": "3.18.5",
-    "esbuild": "0.25.12",
-    "@arkstrongholdrl/ark-play-core": "https://codeload.github.com/ArkStrongholdRL/ark-play-core/tar.gz/a2c909381b10bc547cfb8854784b3955cc4de29b"
+    "esbuild": "0.25.12"
   },
   "repository": {
     "type": "git",

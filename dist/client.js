@@ -77,6 +77,7 @@ function Panel(props) {
   const mirror = props.useSettingsStatus((value) => value);
   const [draft, setDraft] = (0, import_react.useState)(DEFAULT_SITE_URL);
   const [roomCode, setRoomCode] = (0, import_react.useState)("");
+  const [name, setName] = (0, import_react.useState)("");
   const [dirty, setDirty] = (0, import_react.useState)(false);
   const [busy, setBusy] = (0, import_react.useState)(false);
   const [message, setMessage] = (0, import_react.useState)("");
@@ -85,6 +86,7 @@ function Panel(props) {
     if (!dirty && snapshot.value) {
       setDraft(snapshot.value.url ?? DEFAULT_SITE_URL);
       setRoomCode(snapshot.value.roomCode || "");
+      setName(snapshot.value.name || "");
     }
   }, [snapshot.value, dirty]);
   async function save(event) {
@@ -96,10 +98,13 @@ function Panel(props) {
       setBusy(true);
       const code = roomCode.trim().toUpperCase();
       if (code && !/^[A-Z0-9]{4}$/.test(code)) throw new Error("\u623F\u95F4\u53F7\u987B\u4E3A\u56DB\u4F4D\u5B57\u6BCD\u6216\u6570\u5B57");
-      const accepted = await props.save(url, code);
+      const playerName = name.trim();
+      if (playerName.length > 12) throw new Error("\u73A9\u5BB6\u540D\u6700\u591A 12 \u4E2A\u5B57\u7B26");
+      const accepted = await props.save(url, code, playerName);
       if (!accepted) throw new Error("\u4FDD\u5B58\u5931\u8D25\uFF0C\u8BF7\u91CD\u8BD5\u3002");
       setDraft(url);
       setRoomCode(code);
+      setName(playerName);
       setDirty(false);
       setMessage("\u5DF2\u4FDD\u5B58\uFF0C\u4E0B\u6B21\u5F00\u5C40\u751F\u6548\u3002");
     } catch (error) {
@@ -168,6 +173,17 @@ function Panel(props) {
                 setMessage("");
               }, placeholder: "AB12", disabled: busy, maxLength: 4, spellCheck: false, autoComplete: "off", "aria-describedby": "ark-room-help" }),
               (0, import_react.createElement)("p", { id: "ark-room-help", className: "ark-help" }, "\u8F93\u5165\u56DB\u4F4D\u623F\u95F4\u53F7\uFF0C\u52A0\u5165\u540E\u81EA\u52A8\u51C6\u5907\uFF0C\u7B49\u5F85\u623F\u4E3B\u5F00\u59CB\u3002\u7559\u7A7A\u521B\u5EFA\u5355\u4EBA\u5C40\u3002")
+            ),
+            (0, import_react.createElement)(
+              "div",
+              null,
+              (0, import_react.createElement)("label", { htmlFor: "ark-player-name", className: "ark-label" }, (0, import_react.createElement)("span", { className: "ark-index", "aria-hidden": true }, "03"), "\u73A9\u5BB6\u540D", (0, import_react.createElement)("span", { className: "ark-optional" }, "\u53EF\u9009")),
+              (0, import_react.createElement)("input", { id: "ark-player-name", className: "ark-input", value: name, onChange: (e) => {
+                setName(e.target.value);
+                setDirty(true);
+                setMessage("");
+              }, placeholder: "Ark Agent", disabled: busy, maxLength: 12, spellCheck: false, autoComplete: "off", "aria-describedby": "ark-name-help" }),
+              (0, import_react.createElement)("p", { id: "ark-name-help", className: "ark-help" }, "\u6700\u591A 12 \u4E2A\u5B57\u7B26\u3002\u7559\u7A7A\u4F7F\u7528\u5BA2\u6237\u7AEF\u914D\u7F6E\uFF1B\u672A\u914D\u7F6E\u65F6\u4E3A Ark Agent\u3002LLM \u6807\u8BB0\u4ECD\u4F1A\u4FDD\u7559\u3002")
             )
           ),
           (0, import_react.createElement)(
@@ -199,9 +215,10 @@ function Icon() {
 }
 function apply(ctx) {
   const scope = ctx.configForms.get("ark-play");
-  ctx.effect(() => ctx.slots.inject("main", () => ctx.slots.register({ name: "main", key: ID, inject: () => ({ hooks: { arkSettings: scope, settingsStatus: ctx.configForms.describe() }, save: async (url, roomCode) => {
+  ctx.effect(() => ctx.slots.inject("main", () => ctx.slots.register({ name: "main", key: ID, inject: () => ({ hooks: { arkSettings: scope, settingsStatus: ctx.configForms.describe() }, save: async (url, roomCode, name) => {
     if (!await scope.set("url", url)) return false;
-    return scope.set("roomCode", roomCode);
+    if (!await scope.set("roomCode", roomCode)) return false;
+    return scope.set("name", name);
   } }) }, Panel)));
   ctx.effect(() => ctx.slots.inject("sidebar.panellist", () => ctx.slots.register({ name: "sidebar.panellist", id: ID, order: 30, label: "Ark Stronghold" }, Icon)));
 }

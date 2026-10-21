@@ -1,5 +1,6 @@
 import {createTools,z} from '@arkstrongholdrl/ark-play-core';
 import Schema from '@deepseek-ai/schemastery';
+import {resolveConfig} from '@arkstrongholdrl/ark-play-core/config';
 
 export const name='ark-play';
 export const inject=['tools'];
@@ -14,8 +15,9 @@ export const Config=Schema.object({
     .comment('默认 https://ark.minyako.top，自动连接 /ws。保存后用于下一盘，当前对局继续使用原站点。留空继承环境变量或客户端配置。')
     .volatile(),
   roomCode:Schema.string().default('').description('房间号（留空开单人局）').volatile(),
+  name:Schema.string().default('').description('玩家名（最多 12 个字符）').volatile(),
   // Existing composition/file-based setup remains available to headless users.
-  configFile:Schema.string(),name:Schema.string(),headersFile:Schema.string(),
+  configFile:Schema.string(),headersFile:Schema.string(),
   tokenFile:Schema.string(),sessionFile:Schema.string(),token:Schema.string().role('secret'),
 });
 
@@ -39,12 +41,13 @@ function harnessSchema(value) {
 export function apply(ctx,config={}) {
   const runtimes=new Map();
   function options() {
-    const {url,roomCode,...rest}=config;
+    const {url,roomCode,name,...rest}=config;
+    const playerName=String((name&&typeof name.get==='function'?name.get():name)||'').trim();
     const code=String((roomCode&&typeof roomCode.get==='function'?roomCode.get():roomCode)||'').trim().toUpperCase();
     if(code&&!/^[A-Z0-9]{4}$/.test(code))throw new Error('房间号须为四位字母或数字');
     const endpoint=normalizeSiteUrl(url&&typeof url.get==='function'?url.get():url);
     return {...Object.fromEntries(Object.entries(rest).filter(([,value])=>value!==undefined)),
-      ...(endpoint?{url:endpoint}:{}),roomCode:code,client:'dsh-plugin'};
+      ...(endpoint?{url:endpoint}:{}),...(playerName?{name:playerName}:{}),roomCode:code,client:'dsh-plugin'};
   }
   const template=createTools(options());
   async function runtime(exec,toolName) {
@@ -54,7 +57,7 @@ export function apply(ctx,config={}) {
     // Read a saved URL only at a new game boundary, never during an active game.
     if(previous&&toolName==='ark_start'&&!previous.client.inCall&&
       (previous.client.result||
-        ((previous.settingUrl!==(next.url||'')||previous.settingRoomCode!==next.roomCode)&&!previous.client.room?.inMatch&&
+        ((previous.settingUrl!==(next.url||'')||previous.settingRoomCode!==next.roomCode||previous.client.config.name!==resolveConfig(next).name)&&!previous.client.room?.inMatch&&
           !previous.client.uncertain&&!previous.client.replaced&&!previous.client.sessionLost))) {
       await previous.close();runtimes.delete(exec.agent);
     }

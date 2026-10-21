@@ -23443,6 +23443,11 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { homedir } from "node:os";
 var DEFAULT_SITE_URL = "https://ark.minyako.top";
+function normalizePlayerName(value) {
+  const name2 = String(value ?? "").trim();
+  if (name2.length > 12) throw new Error("\u73A9\u5BB6\u540D\u6700\u591A 12 \u4E2A\u5B57\u7B26");
+  return name2 || "Ark Agent";
+}
 function normalizeSiteUrl(value) {
   const input2 = String(value ?? "").trim();
   if (!input2) return "";
@@ -23477,6 +23482,7 @@ function resolveConfig(config2 = {}, environment = process.env) {
   const env = Object.fromEntries(Object.entries({
     url: environment.ARK_AGENT_URL,
     roomCode: environment.ARK_AGENT_ROOM_CODE,
+    name: environment.ARK_AGENT_NAME,
     tokenFile: environment.ARK_AGENT_TOKEN_FILE,
     headersFile: environment.ARK_AGENT_HEADERS_FILE,
     sessionFile: environment.ARK_AGENT_SESSION_FILE
@@ -23484,6 +23490,7 @@ function resolveConfig(config2 = {}, environment = process.env) {
   const resolved = { ...defaults, ...env, ...config2 };
   resolved.url = normalizeSiteUrl(resolved.url || DEFAULT_SITE_URL);
   resolved.roomCode = normalizeRoomCode(resolved.roomCode);
+  resolved.name = normalizePlayerName(resolved.name);
   return resolved;
 }
 
@@ -23721,7 +23728,7 @@ var GameClient = class {
     this.config = resolveConfig(config2);
     config2 = this.config;
     this.url = config2.url || null;
-    this.name = String(config2.name || "Ark Agent").trim().slice(0, 12) || "Ark Agent";
+    this.name = config2.name;
     if (this.url) {
       const u = new URL(this.url);
       if (u.username || u.password || u.search || u.hash || u.pathname !== "/ws") throw new Error("Use the game site /ws URL without credentials/query/hash");
@@ -25119,9 +25126,9 @@ var inject = ["tools"];
 var Config = Schema.object({
   url: Schema.string().default(DEFAULT_SITE_URL2).description("\u6E38\u620F\u7AD9\u94FE\u63A5\uFF08HTTPS / WSS\uFF09").comment("\u9ED8\u8BA4 https://ark.minyako.top\uFF0C\u81EA\u52A8\u8FDE\u63A5 /ws\u3002\u4FDD\u5B58\u540E\u7528\u4E8E\u4E0B\u4E00\u76D8\uFF0C\u5F53\u524D\u5BF9\u5C40\u7EE7\u7EED\u4F7F\u7528\u539F\u7AD9\u70B9\u3002\u7559\u7A7A\u7EE7\u627F\u73AF\u5883\u53D8\u91CF\u6216\u5BA2\u6237\u7AEF\u914D\u7F6E\u3002").volatile(),
   roomCode: Schema.string().default("").description("\u623F\u95F4\u53F7\uFF08\u7559\u7A7A\u5F00\u5355\u4EBA\u5C40\uFF09").volatile(),
+  name: Schema.string().default("").description("\u73A9\u5BB6\u540D\uFF08\u6700\u591A 12 \u4E2A\u5B57\u7B26\uFF09").volatile(),
   // Existing composition/file-based setup remains available to headless users.
   configFile: Schema.string(),
-  name: Schema.string(),
   headersFile: Schema.string(),
   tokenFile: Schema.string(),
   sessionFile: Schema.string(),
@@ -25143,13 +25150,15 @@ function harnessSchema(value) {
 function apply(ctx, config2 = {}) {
   const runtimes = /* @__PURE__ */ new Map();
   function options() {
-    const { url: url2, roomCode, ...rest } = config2;
+    const { url: url2, roomCode, name: name2, ...rest } = config2;
+    const playerName = String((name2 && typeof name2.get === "function" ? name2.get() : name2) || "").trim();
     const code = String((roomCode && typeof roomCode.get === "function" ? roomCode.get() : roomCode) || "").trim().toUpperCase();
     if (code && !/^[A-Z0-9]{4}$/.test(code)) throw new Error("\u623F\u95F4\u53F7\u987B\u4E3A\u56DB\u4F4D\u5B57\u6BCD\u6216\u6570\u5B57");
     const endpoint = normalizeSiteUrl2(url2 && typeof url2.get === "function" ? url2.get() : url2);
     return {
       ...Object.fromEntries(Object.entries(rest).filter(([, value]) => value !== void 0)),
       ...endpoint ? { url: endpoint } : {},
+      ...playerName ? { name: playerName } : {},
       roomCode: code,
       client: "dsh-plugin"
     };
@@ -25159,7 +25168,7 @@ function apply(ctx, config2 = {}) {
     if (!exec.agent) throw new Error("Ark Play requires a DSH execution agent identity");
     const previous = runtimes.get(exec.agent);
     const next = options();
-    if (previous && toolName === "ark_start" && !previous.client.inCall && (previous.client.result || (previous.settingUrl !== (next.url || "") || previous.settingRoomCode !== next.roomCode) && !previous.client.room?.inMatch && !previous.client.uncertain && !previous.client.replaced && !previous.client.sessionLost)) {
+    if (previous && toolName === "ark_start" && !previous.client.inCall && (previous.client.result || (previous.settingUrl !== (next.url || "") || previous.settingRoomCode !== next.roomCode || previous.client.config.name !== resolveConfig(next).name) && !previous.client.room?.inMatch && !previous.client.uncertain && !previous.client.replaced && !previous.client.sessionLost)) {
       await previous.close();
       runtimes.delete(exec.agent);
     }

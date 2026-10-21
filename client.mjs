@@ -25,20 +25,23 @@ function Panel(props) {
   const mirror=props.useSettingsStatus(value=>value);
   const [draft,setDraft]=useState(DEFAULT_SITE_URL);
   const [roomCode,setRoomCode]=useState('');
+  const [name,setName]=useState('');
   const [dirty,setDirty]=useState(false);
   const [busy,setBusy]=useState(false);
   const [message,setMessage]=useState('');
   const [failed,setFailed]=useState(false);
-  useEffect(()=>{if(!dirty&&snapshot.value){setDraft(snapshot.value.url??DEFAULT_SITE_URL);setRoomCode(snapshot.value.roomCode||'');}},[snapshot.value,dirty]);
+  useEffect(()=>{if(!dirty&&snapshot.value){setDraft(snapshot.value.url??DEFAULT_SITE_URL);setRoomCode(snapshot.value.roomCode||'');setName(snapshot.value.name||'');}},[snapshot.value,dirty]);
   async function save(event) {
     event.preventDefault();setMessage('');setFailed(false);
     try {
       const url=normalizeSiteUrl(draft);setBusy(true);
       const code=roomCode.trim().toUpperCase();
       if(code&&!/^[A-Z0-9]{4}$/.test(code))throw new Error('房间号须为四位字母或数字');
-      const accepted=await props.save(url,code);
+      const playerName=name.trim();
+      if(playerName.length>12)throw new Error('玩家名最多 12 个字符');
+      const accepted=await props.save(url,code,playerName);
       if(!accepted)throw new Error('保存失败，请重试。');
-      setDraft(url);setRoomCode(code);setDirty(false);setMessage('已保存，下次开局生效。');
+      setDraft(url);setRoomCode(code);setName(playerName);setDirty(false);setMessage('已保存，下次开局生效。');
     } catch(error) {setFailed(true);setMessage(error.message||String(error));}
     finally {setBusy(false);}
   }
@@ -69,7 +72,11 @@ function Panel(props) {
           h('div',null,
             h('label',{htmlFor:'ark-room-code',className:'ark-label'},h('span',{className:'ark-index','aria-hidden':true},'02'),'房间号',h('span',{className:'ark-optional'},'可选')),
             h('input',{id:'ark-room-code',className:'ark-input ark-room',value:roomCode,onChange:e=>{setRoomCode(e.target.value.toUpperCase());setDirty(true);setMessage('');},placeholder:'AB12',disabled:busy,maxLength:4,spellCheck:false,autoComplete:'off','aria-describedby':'ark-room-help'}),
-            h('p',{id:'ark-room-help',className:'ark-help'},'输入四位房间号，加入后自动准备，等待房主开始。留空创建单人局。'))),
+            h('p',{id:'ark-room-help',className:'ark-help'},'输入四位房间号，加入后自动准备，等待房主开始。留空创建单人局。')),
+          h('div',null,
+            h('label',{htmlFor:'ark-player-name',className:'ark-label'},h('span',{className:'ark-index','aria-hidden':true},'03'),'玩家名',h('span',{className:'ark-optional'},'可选')),
+            h('input',{id:'ark-player-name',className:'ark-input',value:name,onChange:e=>{setName(e.target.value);setDirty(true);setMessage('');},placeholder:'Ark Agent',disabled:busy,maxLength:12,spellCheck:false,autoComplete:'off','aria-describedby':'ark-name-help'}),
+            h('p',{id:'ark-name-help',className:'ark-help'},'最多 12 个字符。留空使用客户端配置；未配置时为 Ark Agent。LLM 标记仍会保留。'))),
         h('div',{className:'ark-footer'},
           h('p',{className:'ark-footnote'},dirty?'有未保存的更改':'配置将在下次开局时生效'),
           h('button',{type:'submit',disabled:busy,className:'ark-save'},busy?'正在保存…':'保存配置',h('span',{'aria-hidden':true},'→')))),
@@ -81,6 +88,6 @@ function Panel(props) {
 function Icon(){return h('span',{style:{display:'inline-block',width:18,height:20},'aria-hidden':true},h(Emblem));}
 export function apply(ctx) {
   const scope=ctx.configForms.get('ark-play');
-  ctx.effect(()=>ctx.slots.inject('main',()=>ctx.slots.register({name:'main',key:ID,inject:()=>({hooks:{arkSettings:scope,settingsStatus:ctx.configForms.describe()},save:async(url,roomCode)=>{if(!await scope.set('url',url))return false;return scope.set('roomCode',roomCode);}})},Panel)));
+  ctx.effect(()=>ctx.slots.inject('main',()=>ctx.slots.register({name:'main',key:ID,inject:()=>({hooks:{arkSettings:scope,settingsStatus:ctx.configForms.describe()},save:async(url,roomCode,name)=>{if(!await scope.set('url',url))return false;if(!await scope.set('roomCode',roomCode))return false;return scope.set('name',name);}})},Panel)));
   ctx.effect(()=>ctx.slots.inject('sidebar.panellist',()=>ctx.slots.register({name:'sidebar.panellist',id:ID,order:30,label:'Ark Stronghold'},Icon)));
 }
