@@ -32,13 +32,18 @@ After updating package.json/package-lock.json, rebuilding and committing the
 generated files, wait for branch CI to pass, then publish the matching commit:
 
 ```sh
-git tag v0.1.1
-git push origin v0.1.1
+git tag v0.1.2
+git push origin v0.1.2
 ```
 
 Do not manually create the GitHub Release to trigger publication. A manual
 workflow_dispatch run can still build only, or publish to npm when explicitly
 requested on a matching version tag. Core remains pinned to its exact commit.
+
+Multiplayer waiting is event-driven in Core: joining/readiness, other players'
+turns, combat and pause/resume keep the same tool call pending until a decision,
+result or error. The DSH adapter deliberately omits timeoutMs and forwards
+exec.signal for cancellation. No periodic tool result or model polling is used.
 
 The shared module loader is owned by Core and bundled beside site-worker.mjs.
 PUBLISH.md is optional in the shared packager, so removing publishing notes does

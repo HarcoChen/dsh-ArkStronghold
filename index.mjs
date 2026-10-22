@@ -74,6 +74,8 @@ export function apply(ctx,config={}) {
   });
   for(const tool of template.tools) {
     const parameters=harnessSchema(z.toJSONSchema(tool.schema));
+    // No per-tool deadline: human lobby/turn waits suspend on WS events and
+    // remain cancellable through exec.signal, rather than waking the model.
     ctx.tools.register({name:tool.name,description:tool.description,parameters,
       output:{schema:{type:'object',properties:{text:{type:'string'}},required:['text'],additionalProperties:false},
         render:(_args,value)=>[{type:'text',text:value.text}]},
