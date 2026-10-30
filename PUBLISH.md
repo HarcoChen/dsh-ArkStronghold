@@ -65,3 +65,20 @@ The npm job is controlled by `NPM_PUBLISH_ENABLED` and trusted publishing.
 Five gameplay tools remain. Combat metrics/replay and multiple roles are design
 work only; the companion proposal is in the Codex repository's
 `docs/COMBAT-AND-MULTIROLE-DESIGN.md`.
+
+## 2026-10-30: settled-round combat metrics candidate
+
+Current candidate: 0.1.5, pinned Core aea58dd9987c11a6cc255cdd139a9c679e024292 (0.2.0-alpha.5).
+Six shared tools now include `ark_combat({scope:'last'|'match'})`: damage, damage
+taken, effective healing, shares and player DPS/HPS from completed native
+simulations. Summons are credited to their operator. Missing, taken-over,
+reconstructed and interrupted fields are explicit; coverage is local fields,
+not a server-wide ranking. No active-round counters, frame logs or replay.
+Both host skills require one read after each settled round before the next
+action, and before finishing terminal review. No polling for missing metrics.
+
+Validated: 15 Core tests; local 0.3.3 Worker counters and full compact battle
+result match direct native simulation (damage 12100, taken 135, healing 135);
+Worker takeover/interruption, unavailable remote fields and new-match reset.
+Host build/package audits and Node 22/24 CI accompany this candidate.
+No tag, Release, npm publication or installed-profile replacement in this step.
