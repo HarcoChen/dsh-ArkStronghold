@@ -23537,6 +23537,7 @@ var SiteRuntime = class {
     if (!/^[a-f0-9]{64}$/.test(cs)) throw new Error("Site did not publish a supported content identity");
     const index2 = JSON.parse(await readSite(this.origin + "/cs/" + cs.slice(0, 16) + "/index.json", this.headers, 1024 * 1024));
     if (index2.cs !== cs || index2.v !== 1 || index2.vanilla !== true || !index2.simFiles || !index2.data || index2.plugins?.length) throw new Error("Only the site vanilla content protocol v1 is supported");
+    if (index2.version) throw new Error("Historical-version rooms are not supported by this client; use the default version");
     const raw = Object.fromEntries(await Promise.all(FILES.map(async (key) => {
       const ref = index2.data[key];
       if (!ref) throw new Error("Site data missing: " + key);
@@ -24022,6 +24023,7 @@ var GameClient = class {
         return { status: "left", storage: "managed-by-game-site" };
       }
       if (this.room?.content?.vanilla === false) throw new Error("Gameplay plugin content sets are not supported by this client version");
+      if (this.room?.version) throw new Error("Historical-version rooms are not supported by this client; use the default version");
       if (payload.op === "view") {
         await this.settle(signal);
         const result = await this.view();
@@ -24042,6 +24044,7 @@ var GameClient = class {
           if (!/^[A-Z0-9]{4}$/.test(code)) throw new Error("Expected a four-character room code");
           await this.request({ t: "room.join", code });
           if (this.room?.content?.vanilla === false) throw new Error("Gameplay plugin content sets are not supported by this client version");
+          if (this.room?.version) throw new Error("Historical-version rooms are not supported by this client; use the default version");
           await this.request({ t: "room.ready", ready: true });
         } else {
           await this.request({ t: "room.create", mode: "solo", difficulty: payload.difficulty || "ABYSS" });
@@ -24252,6 +24255,10 @@ function createTools(config2 = {}) {
     await client.close();
   } };
 }
+
+// index.mjs
+import { readFileSync as readFileSync3 } from "node:fs";
+import { fileURLToPath } from "node:url";
 
 // node_modules/@deepseek-ai/cosmokit/lib/index.js
 function isNullable(value) {
@@ -25169,6 +25176,32 @@ function harnessSchema(value) {
   return out;
 }
 function apply(ctx, config2 = {}) {
+  ctx.inject(["skills"], (skillCtx) => {
+    const directory = fileURLToPath(new URL("./skills/ark-covenant-playbook/", import.meta.url));
+    const locator = directory + "SKILL.md";
+    const raw = readFileSync3(locator, "utf8");
+    const header = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/u.exec(raw);
+    if (!header) throw new Error("Ark covenant skill frontmatter missing");
+    const description = /^description: (.+)$/mu.exec(header[1])?.[1];
+    if (!description) throw new Error("Ark covenant skill description missing");
+    const summary = {
+      name: "ark-covenant-playbook",
+      description,
+      invocation: { modelInvocable: true, userInvocable: true },
+      provider: "ark-play",
+      source: "bundled",
+      resourceBase: { kind: "directory", path: directory }
+    };
+    skillCtx.skills.registerProvider(() => ({
+      name: "ark-play",
+      list: async () => [{ ...summary, rank: 600, locator }],
+      // DSH bundled-provider priority.
+      get: async (_candidate, { signal } = {}) => {
+        signal?.throwIfAborted();
+        return { ...summary, content: raw.slice(header[0].length).trim() };
+      }
+    }));
+  });
   const runtimes = /* @__PURE__ */ new Map();
   function options() {
     const { url: url2, roomCode, name: name2, ...rest } = config2;

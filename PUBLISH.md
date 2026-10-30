@@ -48,3 +48,20 @@ exec.signal for cancellation. No periodic tool result or model polling is used.
 The shared module loader is owned by Core and bundled beside site-worker.mjs.
 PUBLISH.md is optional in the shared packager, so removing publishing notes does
 not break package creation. README.md is maintained separately.
+
+## 2026-10-30: 0.3.3 compatibility candidate
+
+Huawei is running game 0.3.3. The prepared client is `dsh-ark-stronghold@0.1.4`,
+pinning Core `6eae6865467e5df4b363ac6ee84f2314ecda4a17`. It accepts default-version
+vanilla sites through app 0.3.3 and rejects historical-version rooms before ready.
+Existing bundled skill and package changes are retained. README.md is unchanged.
+
+This preparation pushes a candidate branch and runs Node 22/24 build/package CI;
+it creates no tag, GitHub Release or npm publication and does not alter an installed
+DSH profile. After branch CI passes, tag the exact checked commit `v0.1.4` to let
+the existing publish workflow build, audit and attach both ZIP and npm artifacts.
+The npm job is controlled by `NPM_PUBLISH_ENABLED` and trusted publishing.
+
+Five gameplay tools remain. Combat metrics/replay and multiple roles are design
+work only; the companion proposal is in the Codex repository's
+`docs/COMBAT-AND-MULTIROLE-DESIGN.md`.

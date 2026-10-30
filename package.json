@@ -1,6 +1,6 @@
 {
   "name": "dsh-ark-stronghold",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "type": "module",
   "main": "./dist/index.mjs",
   "dsh": {
@@ -38,7 +38,7 @@
     }
   },
   "devDependencies": {
-    "@arkstrongholdrl/ark-play-core": "https://codeload.github.com/ArkStrongholdRL/ark-play-core/tar.gz/5596e86ec948da58ca203b6eb5b30cba35a79b1e",
+    "@arkstrongholdrl/ark-play-core": "https://codeload.github.com/ArkStrongholdRL/ark-play-core/tar.gz/6eae6865467e5df4b363ac6ee84f2314ecda4a17",
     "@deepseek-ai/schemastery": "3.18.5",
     "esbuild": "0.25.12"
   },
@@ -63,7 +63,8 @@
     "PUBLISH.md",
     "client.mjs",
     "site-url.mjs",
-    "public"
+    "public",
+    "skills"
   ],
   "bin": {
     "ark-play-configure": "./configure.mjs"

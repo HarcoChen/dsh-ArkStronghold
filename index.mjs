@@ -1,4 +1,6 @@
 import {createTools,z} from '@arkstrongholdrl/ark-play-core';
+import {readFileSync} from 'node:fs';
+import {fileURLToPath} from 'node:url';
 import Schema from '@deepseek-ai/schemastery';
 import {resolveConfig} from '@arkstrongholdrl/ark-play-core/config';
 
@@ -39,6 +41,27 @@ function harnessSchema(value) {
 
 /** Mount per agent or globally: a global registration still isolates runs by executing agent. */
 export function apply(ctx,config={}) {
+  // Register lazily so profiles that only mount the gameplay tools still work.
+  ctx.inject(['skills'],skillCtx=>{
+    const directory=fileURLToPath(new URL('./skills/ark-covenant-playbook/',import.meta.url));
+    const locator=directory+'SKILL.md';
+    const raw=readFileSync(locator,'utf8');
+    const header=/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/u.exec(raw);
+    if(!header)throw new Error('Ark covenant skill frontmatter missing');
+    const description=/^description: (.+)$/mu.exec(header[1])?.[1];
+    if(!description)throw new Error('Ark covenant skill description missing');
+    const summary={name:'ark-covenant-playbook',description,
+      invocation:{modelInvocable:true,userInvocable:true},provider:'ark-play',source:'bundled',
+      resourceBase:{kind:'directory',path:directory}};
+    skillCtx.skills.registerProvider(()=>({
+      name:'ark-play',
+      list:async()=>[{...summary,rank:600,locator}], // DSH bundled-provider priority.
+      get:async(_candidate,{signal}={})=>{
+        signal?.throwIfAborted();
+        return {...summary,content:raw.slice(header[0].length).trim()};
+      },
+    }));
+  });
   const runtimes=new Map();
   function options() {
     const {url,roomCode,name,...rest}=config;

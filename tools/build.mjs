@@ -8,6 +8,8 @@ const root=fileURLToPath(new URL('../',import.meta.url));
 const shared=dirname(fileURLToPath(import.meta.resolve('@arkstrongholdrl/ark-play-core/package.json')));
 const metadata=JSON.parse(await readFile(join(root,'package.json'),'utf8'));
 await mkdir(join(root,'dist'),{recursive:true});
+await rm(join(root,'dist/skills'),{recursive:true,force:true});
+await cp(join(root,'skills'),join(root,'dist/skills'),{recursive:true});
 await build({entryPoints:[join(root,'index.mjs')],outfile:join(root,'dist/index.mjs'),bundle:true,
   platform:'node',format:'esm',target:'node22',sourcemap:false,
   banner:{js:"import { createRequire as __createRequire } from 'node:module'; const require = __createRequire(import.meta.url);"}});
