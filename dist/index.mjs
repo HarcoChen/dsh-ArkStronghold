@@ -24127,7 +24127,7 @@ var GameClient = class {
       await this.settle(signal, readyRound);
       return { ...await this.view(), executed, ...!executed.length ? { notice: "\u5F53\u524D\u6CA1\u6709\u53EF\u63D0\u4EA4\u7684\u73A9\u5BB6\u51B3\u7B56\uFF1B\u672C\u6279\u672A\u6267\u884C\uFF0C\u8BF7\u4F9D\u636E\u65B0\u5C40\u9762\u91CD\u65B0\u9009\u62E9\u3002" } : {} };
     } catch (e) {
-      if (signal?.aborted) this.uncertain = true;
+      if (signal?.aborted && payload.op !== "combat") this.uncertain = true;
       throw e;
     } finally {
       this.inCall = false;

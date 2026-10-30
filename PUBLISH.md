@@ -68,7 +68,7 @@ work only; the companion proposal is in the Codex repository's
 
 ## 2026-10-30: settled-round combat metrics candidate
 
-Current candidate: 0.1.5, pinned Core aea58dd9987c11a6cc255cdd139a9c679e024292 (0.2.0-alpha.5).
+Current candidate: 0.1.5, pinned Core 7450e17f37138e9d3a8636b1f345e094a98b1693 (0.2.0-alpha.5).
 Six shared tools now include `ark_combat({scope:'last'|'match'})`: damage, damage
 taken, effective healing, shares and player DPS/HPS from completed native
 simulations. Summons are credited to their operator. Missing, taken-over,
